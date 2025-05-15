@@ -1,0 +1,6 @@
+.cache/
+.idea/
+vendor/
+.env
+composer.lock
+node_modules
