@@ -2,7 +2,11 @@
 
 namespace Happytodev\Cyclone\Commands;
 
+use App\Auth\User;
+use DateTimeImmutable;
+use Happytodev\Cyclone\models\Post;
 use Tempest\Console\ConsoleCommand;
+use Happytodev\Cyclone\Repositories\PostRepository;
 
 final readonly class Cyclone
 {
@@ -58,7 +62,44 @@ final readonly class Cyclone
     }
 
     #[ConsoleCommand]
-    public function info(): void {
+    public function info(): void
+    {
         echo "Cyclone v1.0.0-alpha.1\n";
+    }
+
+    #[ConsoleCommand]
+    public function adduser(): void
+    {
+        $user = new User(
+            name: 'Happy',
+            email: 'happytodev@gmail.com',
+        )
+            ->setPassword('password')
+            ->save()
+            ->grantPermission('admin');
+    }
+
+    #[ConsoleCommand]
+    public function addblogpost()
+    {
+        $repository = new PostRepository();
+        
+        // $postCounter = $repository->getTotalPosts() + 1;
+
+        $user = User::select()
+            ->where('email == ?', 'happytodev@gmail.com')
+            ->first();
+
+        for ($i=0; $i < 30; $i++) { 
+            $post = Post::create(
+                title: 'Lorem ipsum ' . $i,
+                slug: 'lorem-ipsum-' . $i,
+                tldr: 'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.',
+                markdown_file_path: 'lorem.md',
+                user: $user,
+                created_at: new DateTimeImmutable(),
+                published_at: new DateTimeImmutable()
+            );
+        }
     }
 }
