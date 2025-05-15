@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@config "../tailwind.config.js";
+@import "../vendor/tempest/highlight/src/Themes/Css/dracula.css";
+
+/* Custom styles for menu Fixed Header with Blur Effect inspired by Maxim https://tailwindflex.com/@maximus/dropdown-blur-menu  */
+.blur-bg {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  min-width: 200px;
+  z-index: 50;
+}
+
+.portfolio-dropdown {
+  min-width: 50vw;
+  max-width: 55vw;
+  left: 50%;
+  transform: translateX(-55%);
+}
+
+@media (max-width: 1024px) {
+  .portfolio-dropdown {
+    width: 95vw;
+  }
+}
