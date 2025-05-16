@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
-@config "../tailwind.config.js";
+/* @config "../tailwind.config.js"; */
 @import "../../vendor/tempest/highlight/src/Themes/Css/dracula.css";
 
 /* Custom styles for menu Fixed Header with Blur Effect inspired by Maxim https://tailwindflex.com/@maximus/dropdown-blur-menu  */
