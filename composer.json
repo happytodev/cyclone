@@ -28,8 +28,7 @@
             "php tempest install auth",
             "php tempest migrate:up",
             "php tempest cyclone:adduser",
-            "php tempest cyclone:addblogpost",
-            "npm install && npm run build"
+            "php tempest cyclone:addblogpost"
         ],
         "post-install-cmd": [
             "npm install && npm run build"
