@@ -1,7 +1,7 @@
 {
     "name": "happytodev/cyclone",
     "description": "A simple blog system for TempestPHP framework",
-    "version": "v1.0.0-alpha.1",
+    "version": "v1.0.0-alpha.2",
     "type": "project",
     "license": "MIT",
     "autoload": {
