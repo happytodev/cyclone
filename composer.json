@@ -26,7 +26,16 @@
         "post-create-project-cmd": [
             "php tempest install vite",
             "php tempest install auth",
-            "php tempest migrate:up"
+            "php tempest migrate:up",
+            "php tempest cyclone:adduser",
+            "php tempest cyclone:addblogpost",
+            "npm install && npm run build"
+        ],
+        "post-install-cmd": [
+            "npm install && npm run build"
+        ],
+        "post-update-cmd": [
+            "npm install && npm run build"
         ]
     }
 }

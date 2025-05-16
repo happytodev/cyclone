@@ -68,7 +68,7 @@ For now, only `logo.webp`, `main.entrypoint.css` and `main.entrypoint.ts` will b
 ```bash
 npm install
 npm install -D @tailwindcss/typography
-npm run dev
+npm run build or dev
 ```
 
 ### Add content
