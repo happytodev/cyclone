@@ -3,7 +3,7 @@
     "description": "A simple blog system for TempestPHP framework",
     "type": "project",
     "license": "MIT",
-    "version": "1.0.0-alpha.2",
+    "version": "1.0.0-alpha.3",
     "autoload": {
         "psr-4": {
             "Happytodev\\Cyclone\\": "src/"
@@ -18,7 +18,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "tempest/app": "1.0-beta.1",
+        "tempest/framework": "1.0-beta.1",
         "symfony/yaml": "^7.2",
         "league/commonmark": "^2.7",
         "tempest/highlight": "^2.11"
