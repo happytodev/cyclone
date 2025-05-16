@@ -21,15 +21,15 @@ final readonly class Cyclone
         // List of files to be copied with their sources and destinations
         $filesToCopy = [
             [
-                'source' => './vendor/happytodev/cyclone/src/Resources/img/logo.webp',
+                'source' => './app/Resources/img/logo.webp',
                 'destination' => './public/img/logo.webp'
             ],
             [
-                'source' => './vendor/happytodev/cyclone/src/Resources/main.entrypoint.css',
+                'source' => './app/Resources/main.entrypoint.css',
                 'destination' => './app/main.entrypoint.css'
             ],
             [
-                'source' => './vendor/happytodev/cyclone/src/Resources/main.entrypoint.ts',
+                'source' => './app/Resources/main.entrypoint.ts',
                 'destination' => './app/main.entrypoint.ts'
             ],
         ];
