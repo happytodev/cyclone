@@ -25,11 +25,11 @@ final readonly class Cyclone
                 'destination' => './public/img/logo.webp'
             ],
             [
-                'source' => './app/Resources/main.entrypoint.css',
+                'source' => './app/Resources/main.entrypoint.css.stub',
                 'destination' => './app/main.entrypoint.css'
             ],
             [
-                'source' => './app/Resources/main.entrypoint.ts',
+                'source' => './app/Resources/main.entrypoint.ts.stub',
                 'destination' => './app/main.entrypoint.ts'
             ],
         ];
