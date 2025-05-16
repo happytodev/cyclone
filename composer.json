@@ -1,6 +1,7 @@
 {
     "name": "happytodev/cyclone",
     "description": "A simple blog system for TempestPHP framework",
+    "version": "v1.0.0-alpha.1",
     "type": "project",
     "license": "MIT",
     "autoload": {
@@ -21,5 +22,12 @@
         "symfony/yaml": "^7.2",
         "league/commonmark": "^2.7",
         "tempest/highlight": "^2.11"
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "php tempest install vite",
+            "php tempest install auth",
+            "php tempest migrate:up"
+        ]
     }
 }
