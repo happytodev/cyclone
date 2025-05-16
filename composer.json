@@ -29,6 +29,7 @@
             "php tempest migrate:up",
             "php tempest cyclone:adduser",
             "php tempest cyclone:addblogpost",
+            "php tempest cyclone:assets",
             "npm install && npm run build"
         ]
     }
