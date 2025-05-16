@@ -5,15 +5,25 @@ Cyclone is the first blog engine made with Tempest framework.
 
 ## Install
 
-### Install a new tempest project : 
+### Install a new tempest project
+
+Currently Tempest is in beta phase
 
 ```bash
 composer create-project tempest/app cyclonedemo --stability beta
 ```
 
 ```bash
+cd cyclonedemo
+```
+
+
+```bash
 php tempest install vite
 ```
+
+Follow the instructions and answer ‘yes’ to all the questions.
+The choice of package manager is up to you. For the following, we will assume that the `npm` option has been chosen.
 
 ### Chores
 
@@ -28,6 +38,10 @@ remove following files from your fresh install :
 
 ```bash
 composer require happytodev/cyclone
+```
+
+```bash
+composer update
 ```
 
 ### Install built-in user model
@@ -47,10 +61,14 @@ The Tempest's migrations will run first, the Cyclone's migrations in second.
 php tempest cyclone:assets
 ```
 
-For now, only logo.webp, main.entrypoint.css and mail.entrypoint.ts will be copied.
+For now, only `logo.webp`, `main.entrypoint.css` and `main.entrypoint.ts` will be copied.
 
 ### run the front end development server
 
 ```bash
 npm run dev
 ```
+
+### Add content
+
+Add your markdown files in the `content` folder.
