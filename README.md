@@ -66,6 +66,8 @@ For now, only `logo.webp`, `main.entrypoint.css` and `main.entrypoint.ts` will b
 ### run the front end development server
 
 ```bash
+npm install
+npm install -D @tailwindcss/typography
 npm run dev
 ```
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Happytodev\Cyclone\Controllers;
+namespace App\Controllers;
 
 use Tempest\View\View;
 use Tempest\Router\Get;
@@ -8,8 +8,8 @@ use Tempest\Http\Request;
 
 use function Tempest\view;
 
-use Happytodev\Cyclone\Views\Post\PostsListView;
-use Happytodev\Cyclone\Repositories\PostRepository;
+use App\Views\Post\PostsListView;
+use App\Repositories\PostRepository;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\MarkdownConverter;

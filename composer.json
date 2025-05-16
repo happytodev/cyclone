@@ -3,10 +3,9 @@
     "description": "A simple blog system for TempestPHP framework",
     "type": "project",
     "license": "MIT",
-    "version": "1.0.0-alpha.4",
     "autoload": {
         "psr-4": {
-            "Happytodev\\Cyclone\\": "src/"
+            "App\\": "app/"
         }
     },
     "authors": [

@@ -1,9 +1,9 @@
 <?php
 
-namespace Happytodev\Cyclone\Repositories;
+namespace App\Repositories;
 
 use DateTimeImmutable;
-use Happytodev\Cyclone\models\Post;
+use App\models\Post;
 use function Tempest\Database\query;
 
 class PostRepository

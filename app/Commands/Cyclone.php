@@ -1,12 +1,12 @@
 <?php
 
-namespace Happytodev\Cyclone\Commands;
+namespace App\Commands;
 
 use App\Auth\User;
 use DateTimeImmutable;
-use Happytodev\Cyclone\models\Post;
+use App\models\Post;
 use Tempest\Console\ConsoleCommand;
-use Happytodev\Cyclone\Repositories\PostRepository;
+use App\Repositories\PostRepository;
 
 final readonly class Cyclone
 {

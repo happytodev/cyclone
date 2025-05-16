@@ -1,6 +1,6 @@
 <?php
 
-namespace Happytodev\Cyclone\Database\Migrations;
+namespace App\Database\Migrations;
 
 use Tempest\Database\QueryStatement;
 use Tempest\Database\DatabaseMigration;
