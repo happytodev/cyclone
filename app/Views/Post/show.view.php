@@ -7,6 +7,12 @@
                 <span> by {{ $post->user->name }}</span>
                 <span :if="$this->post->published_at"> on {{ $post->published_at->format('M j, Y') }}</span>
             </div>
+
+            <!-- Cover image -->
+            <div :if="$post->cover_image" class="mb-8">
+                <img src="/img/blog/{{ $post->cover_image }}" alt="Cover image for {{ $post->title }}" class="w-full h-auto rounded-lg shadow-md object-cover mt-4">
+            </div>
+
             <!-- TLDR section as a quote -->
             <div :if="$post->tldr" class="mt-4">
                 <blockquote class="border-l-4 border-gray-300 pl-4 italic text-gray-600">

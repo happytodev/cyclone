@@ -2,13 +2,14 @@
 
 namespace App\Repositories;
 
-use DateTimeImmutable;
 use App\models\Post;
+use DateTimeImmutable;
+use Tempest\Database\Id;
+
 use function Tempest\Database\query;
 
-class PostRepository
+final class PostRepository
 {
-
     /**
      * Return all posts
      *
@@ -63,5 +64,44 @@ class PostRepository
             ->where('slug == ?', $slug)
             ->with('user')
             ->first());
+    }
+
+
+    /**
+     * Delete posts without maching file
+     *
+     * @param array $existingSlugs
+     * @return boolean
+     */
+    public function deletePostsWithoutMachingFile(array $existingSlugs): bool
+    {
+        // Check that the table is not empty to avoid an SQL error
+        if (empty($existingSlugs)) {
+            // Special case: delete all posts if $existingSlugs is empty
+            $queryBuilder = query(Post::class)
+                ->delete()
+                ->allowAll(); // Deletes all lines
+        } else {
+            // Generate placeholders for NOT IN
+            $placeholders = implode(', ', array_fill(0, count($existingSlugs), '?'));
+            $condition = "slug NOT IN ($placeholders)";
+
+            // Build the DELETE request
+            $queryBuilder = query(Post::class)
+                ->delete()
+                ->where($condition, ...$existingSlugs);
+        }
+
+        // Generate the SQL query
+        $query = $queryBuilder->build();
+
+        // Execute the request
+        $result = $query->execute();
+
+        if ($result instanceof Id && $result->id === 0) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -3,19 +3,68 @@
 namespace App\Commands;
 
 use App\Auth\User;
-use DateTimeImmutable;
 use App\models\Post;
+use DateTimeImmutable;
+use Symfony\Component\Yaml\Yaml;
 use Tempest\Console\ConsoleCommand;
 use App\Repositories\PostRepository;
+use Tempest\Console\Schedule;
+use Tempest\Console\Scheduler\Every;
+
+use function Tempest\Database\Query;
+use function Tempest\Support\Arr\every;
 
 final readonly class Cyclone
 {
+    private string $postsDir;
+
+    public function __construct()
+    {
+        $this->postsDir = 'content/blog';
+    }
+
+    #[ConsoleCommand('cyclone:add-blog-post')]
+    public function addblogpost()
+    {
+        $repository = new PostRepository();
+
+        // $postCounter = $repository->getTotalPosts() + 1;
+
+        $user = User::select()
+            ->where('email == ?', 'happytodev@gmail.com')
+            ->first();
+
+        for ($i = 0; $i < 30; $i++) {
+            $post = Post::create(
+                title: 'Lorem ipsum ' . $i,
+                slug: 'lorem-ipsum-' . $i,
+                tldr: 'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.',
+                markdown_file_path: 'lorem.md',
+                user: $user,
+                created_at: new DateTimeImmutable(),
+                published_at: new DateTimeImmutable()
+            );
+        }
+    }
+
+    #[ConsoleCommand('cyclone:add-user')]
+    public function adduser(): void
+    {
+        $user = new User(
+            name: 'Happy',
+            email: 'happytodev@gmail.com',
+        )
+            ->setPassword('password')
+            ->save()
+            ->grantPermission('admin');
+    }
+
     /**
      * Copy every assets from cyclone to the final site
      *
      * @return void
      */
-    #[ConsoleCommand]
+    #[ConsoleCommand('cyclone:assets')]
     public function assets(): void
     {
         // List of files to be copied with their sources and destinations
@@ -61,45 +110,79 @@ final readonly class Cyclone
         }
     }
 
-    #[ConsoleCommand]
+    #[ConsoleCommand('cyclone:info')]
     public function info(): void
     {
         echo "Cyclone v1.0.0-alpha.1\n";
     }
 
-    #[ConsoleCommand]
-    public function adduser(): void
-    {
-        $user = new User(
-            name: 'Happy',
-            email: 'happytodev@gmail.com',
-        )
-            ->setPassword('password')
-            ->save()
-            ->grantPermission('admin');
-    }
-
-    #[ConsoleCommand]
-    public function addblogpost()
+    #[Schedule(Every::HOUR)]
+    #[ConsoleCommand('cyclone:sync-posts')]
+    public function syncPosts(): void
     {
         $repository = new PostRepository();
-        
-        // $postCounter = $repository->getTotalPosts() + 1;
 
-        $user = User::select()
-            ->where('email == ?', 'happytodev@gmail.com')
-            ->first();
+        $files = glob($this->postsDir . '/*.md');
+        $existingSlugs = [];
 
-        for ($i=0; $i < 30; $i++) { 
-            $post = Post::create(
-                title: 'Lorem ipsum ' . $i,
-                slug: 'lorem-ipsum-' . $i,
-                tldr: 'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.',
-                markdown_file_path: 'lorem.md',
-                user: $user,
-                created_at: new DateTimeImmutable(),
-                published_at: new DateTimeImmutable()
+        foreach ($files as $file) {
+            $slug = pathinfo($file, PATHINFO_FILENAME);
+            $content = file_get_contents($file);
+            $frontmatter = $this->parseFrontmatter($content);
+
+            $postData = [
+                'slug' => $frontmatter['slug'],
+                'title' => $frontmatter['title'],
+                'tldr' => $frontmatter['tldr'],
+                // 'image' => $frontmatter['image'],
+                'markdown_file_path' => $file,
+                'created_at' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $frontmatter['created_at']),
+                'published_at' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $frontmatter['published_at']),
+                'user_id' => $frontmatter['user_id'],
+                'cover_image' => $frontmatter['cover_image'] ?? '',
+            ];
+
+
+            // Manage category
+            // $category = Category::firstOrCreate(['name' => $frontmatter['category']]);
+            // $postData['category_id'] = $category->id;
+
+            // Create or update the post
+            $result = Post::updateOrCreate(
+                ['slug' => $postData["slug"]],
+                $postData
             );
+
+            // Manage tags
+            // $tags = explode(',', $frontmatter['tags']);
+            // $tagIds = [];
+            // foreach ($tags as $tagName) {
+            //     $tag = Tag::firstOrCreate(['name' => trim($tagName)]);
+            //     $tagIds[] = $tag->id;
+            // }
+            // $post->tags()->sync($tagIds);
+
+            $existingSlugs[] = $postData['slug'];
         }
+
+        // Delete posts without a matching file
+        $result = $repository->deletePostsWithoutMachingFile($existingSlugs);
+
+        if ($result) {
+            echo "Posts successfully deleted.";
+        } else {
+            echo "No deletions made.";
+        }
+
+
+        echo "Posts synchronized.\n";
+    }
+
+    private function parseFrontmatter(string $content): array
+    {
+        if (preg_match('/^---\s*\n(.*?)\n---\s*\n/s', $content, $matches)) {
+            return Yaml::parse($matches[1]);
+        }
+        return [];
     }
 }

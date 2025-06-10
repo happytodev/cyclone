@@ -2,7 +2,7 @@
     <!-- Main image -->
     <div class="h-48 w-full overflow-hidden">
         <img
-            src="{{ 'https://picsum.photos/200/400' }}"
+            src="/img/blog/{{ $post->cover_image }}"
             alt="{{ $post->title }}"
             class="w-full h-full object-cover">
     </div>

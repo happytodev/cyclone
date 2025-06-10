@@ -1,6 +1,4 @@
 <!-- Fixed Header with Blur Effect inspired by Maxim https://tailwindflex.com/@maximus/dropdown-blur-menu -->
-<?php //dd($lastnews); 
-?>
 <header x-bind:class="{ 
             'fixed top-0 left-0 right-0 transition-all duration-300 z-40 blur-bg shadow-lg': true,
             'bg-white/70': scrolled,

@@ -55,7 +55,7 @@ final class BlogController
         $rootPath = realpath(getcwd() . '/../');
 
         $markdownPath = realpath($rootPath . '/content/' . $post->markdown_file_path);
-
+        dd($markdownPath);
         $environment = new Environment();
 
         $environment

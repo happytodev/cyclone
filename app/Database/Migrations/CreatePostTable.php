@@ -18,9 +18,9 @@ final class CreatePostTable implements DatabaseMigration
             // limit title to 240 caracters to keep 15 caracters to slug
             ->varchar('title', 240)
             ->varchar('slug')->unique()
-            ->varchar('tldr')
+            ->text('tldr')
             ->varchar('markdown_file_path')
-            ->varchar('image', nullable: true)
+            ->varchar('cover_image', nullable: true)
             ->datetime('created_at')
             ->datetime('published_at', nullable: true)
             ->integer('user_id', unsigned: true);
@@ -30,5 +30,4 @@ final class CreatePostTable implements DatabaseMigration
     {
         return new DropTableStatement('posts');
     }
-
 }
