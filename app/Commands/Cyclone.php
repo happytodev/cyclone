@@ -13,6 +13,7 @@ use Tempest\Console\Scheduler\Every;
 
 use function Tempest\Database\Query;
 use function Tempest\Support\Arr\every;
+use function Tempest\root_path;
 
 final readonly class Cyclone
 {
@@ -39,12 +40,35 @@ final readonly class Cyclone
                 title: 'Lorem ipsum ' . $i,
                 slug: 'lorem-ipsum-' . $i,
                 tldr: 'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.',
-                markdown_file_path: 'lorem.md',
+                markdown_file_path: 'content/blog/lorem.md',
                 user: $user,
                 created_at: new DateTimeImmutable(),
-                published_at: new DateTimeImmutable()
+                published_at: new DateTimeImmutable(),
+                published: true
             );
         }
+
+        Post::create(
+            title: 'First post',
+            slug: 'first-post',
+            tldr: 'A trully really first post on Cyclone.',
+            markdown_file_path: 'content/blog/first-post.md',
+            user: $user,
+            published: true,
+            created_at: new DateTimeImmutable(),
+            published_at: new DateTimeImmutable()
+        );
+
+        Post::create(
+            title: 'Second post',
+            slug: 'second-post',
+            tldr: 'A trully really second post on Cyclone.',
+            markdown_file_path: 'content/blog/second-post.md',
+            user: $user,
+            published: true,
+            created_at: new DateTimeImmutable(),
+            published_at: new DateTimeImmutable()
+        );
     }
 
     #[ConsoleCommand('cyclone:add-user')]
@@ -70,16 +94,28 @@ final readonly class Cyclone
         // List of files to be copied with their sources and destinations
         $filesToCopy = [
             [
-                'source' => './app/Resources/img/logo.webp',
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/img/logo.webp',
                 'destination' => './public/img/logo.webp'
             ],
             [
-                'source' => './app/Resources/main.entrypoint.css.stub',
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/main.entrypoint.css.stub',
                 'destination' => './app/main.entrypoint.css'
             ],
             [
-                'source' => './app/Resources/main.entrypoint.ts.stub',
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/main.entrypoint.ts.stub',
                 'destination' => './app/main.entrypoint.ts'
+            ],
+            [
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/public/img/blog/first-post.webp',
+                'destination' => './public/img/blog/first-post.webp'
+            ],
+            [
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/content/blog/first-post.md',
+                'destination' => './content/blog/first-post.md'
+            ],
+            [
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/content/blog/second-post.md',
+                'destination' => './content/blog/second-post.md'
             ],
         ];
 
@@ -113,7 +149,7 @@ final readonly class Cyclone
     #[ConsoleCommand('cyclone:info')]
     public function info(): void
     {
-        echo "Cyclone v1.0.0-alpha.1\n";
+        echo "Cyclone v1.0.0-alpha.2\n";
     }
 
     #[Schedule(Every::HOUR)]
@@ -134,12 +170,12 @@ final readonly class Cyclone
                 'slug' => $frontmatter['slug'],
                 'title' => $frontmatter['title'],
                 'tldr' => $frontmatter['tldr'],
-                // 'image' => $frontmatter['image'],
                 'markdown_file_path' => $file,
                 'created_at' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $frontmatter['created_at']),
                 'published_at' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $frontmatter['published_at']),
                 'user_id' => $frontmatter['user_id'],
                 'cover_image' => $frontmatter['cover_image'] ?? '',
+                'published' => $frontmatter['published'] ?? false,
             ];
 
 
