@@ -20,17 +20,8 @@
         "tempest/framework": "1.0-beta.1",
         "symfony/yaml": "^7.2",
         "league/commonmark": "^2.7",
-        "tempest/highlight": "^2.11"
-    },
-    "scripts": {
-        "post-create-project-cmd": [
-            "php tempest install vite",
-            "php tempest install auth",
-            "php tempest migrate:up",
-            "php tempest cyclone:adduser",
-            "php tempest cyclone:addblogpost",
-            "php tempest cyclone:assets",
-            "npm install && npm run build"
-        ]
+        "tempest/highlight": "^2.11",
+        "spatie/yaml-front-matter": "^2.1",
+        "tempest/core": "*"
     }
 }
