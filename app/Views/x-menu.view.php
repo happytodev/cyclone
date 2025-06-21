@@ -21,7 +21,7 @@
             <nav class="hidden lg:flex space-x-8 items-center">
 
 
-                <!-- Portfolio -->
+                <!-- Last news -->
                 <div class="relative" x-data="{ open: false }" @click.away="open = false">
                     <button @click="open = !open; dropdowns.portfolio = !dropdowns.portfolio"
                         class="flex items-center text-gray-700 hover:text-sky-600 focus:outline-none">
@@ -30,7 +30,7 @@
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
                     </button>
-                    <!-- Portfolio Dropdown with Card Layout -->
+                    <!-- Last news Dropdown with Card Layout -->
                     <template x-if="open">
                         <div
                             class="dropdown-content portfolio-dropdown mt-2 py-6 px-4 bg-white/80 rounded-md shadow-xl blur-bg"
@@ -42,7 +42,7 @@
                             x-transition:leave-end="opacity-0 transform scale-95"
                             style="display: block;">
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                                <x-post :foreach="$lastnews as $post">
+                                <x-post :foreach="$lastnews as $lastnew">
                                     <x-card />
                                 </x-post>
                                 <x-post :forelse>
