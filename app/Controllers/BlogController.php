@@ -7,13 +7,15 @@ use Tempest\Router\Get;
 use Tempest\Http\Request;
 
 use function Tempest\view;
+use function Tempest\root_path;
 
 use App\Views\Post\PostsListView;
 use App\Repositories\PostRepository;
-use League\CommonMark\Environment\Environment;
-use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\MarkdownConverter;
+use Spatie\YamlFrontMatter\YamlFrontMatter;
+use League\CommonMark\Environment\Environment;
 use Tempest\Highlight\CommonMark\HighlightExtension;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 
 final class BlogController
 {
@@ -52,10 +54,7 @@ final class BlogController
     {
         $post = $this->repository->findBySlug($slug);
 
-        $rootPath = realpath(getcwd() . '/../');
-
-        $markdownPath = realpath($rootPath . '/content/' . $post->markdown_file_path);
-        dd($markdownPath);
+        $markdownPath = root_path() . DIRECTORY_SEPARATOR . $post->markdown_file_path;
         $environment = new Environment();
 
         $environment
@@ -64,14 +63,14 @@ final class BlogController
 
         if (file_exists($markdownPath)) {
             $markdownContent = file_get_contents($markdownPath);
+            $document = YamlFrontMatter::parse($markdownContent);
 
             $converter = new MarkdownConverter($environment);
-            $content = $converter->convert($markdownContent);
-
+            $content = $converter->convert($document->body());
         } else {
             $content = 'Content not found';
         }
 
-        return view('../Views/Post/show.view.php', post: $post, content: $content); 
+        return view('../Views/Post/show.view.php', post: $post, content: $content);
     }
 }
