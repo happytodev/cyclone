@@ -21,7 +21,6 @@ final class LastNewsViewProcessor implements ViewProcessor
     public function process(View $view): View
     {
         // Inject $lastnews variable in every view
-        // return $view->data(lastnews: $this->lastnews);
-        return $view->data(lastnews: null);
+        return $view->data(lastnews: $this->lastnews);
     }
 }
