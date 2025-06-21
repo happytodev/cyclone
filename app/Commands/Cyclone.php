@@ -149,7 +149,7 @@ final readonly class Cyclone
     #[ConsoleCommand('cyclone:info')]
     public function info(): void
     {
-        echo "Cyclone v1.0.0-alpha.2\n";
+        echo "Cyclone v1.0.0-alpha.5\n";
     }
 
     #[Schedule(Every::HOUR)]
