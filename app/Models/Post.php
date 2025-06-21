@@ -28,6 +28,8 @@ final class Post implements Bindable
 
     public string $cover_image;
 
+    public bool $published;
+
     public function getContent(): string
     {
         return file_get_contents($this->markdown_file_path);
