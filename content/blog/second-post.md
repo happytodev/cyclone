@@ -1,15 +1,16 @@
 ---
-title: "First post"
-slug: "first-post"
-tldr: "A trully really first post on Cyclone."
-created_at: "2025-05-18 12:43:00"
-published_at: "2025-05-18 13:43:00"
+title: "Second post"
+slug: "second-post"
+tldr: "A trully really second post on Cyclone."
+created_at: "2025-05-48 12:43:00"
+published_at: "2025-05-48 13:43:00"
 user_id: 1
 cover_image: "first-post.webp"
 ---
-# First post!
 
-Lorem ipsum
+# Second post 2!
+
+Lorem ipsum 2
 
 
 ```php
