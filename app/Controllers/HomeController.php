@@ -9,6 +9,8 @@ use DateTimeImmutable;
 use Tempest\View\View;
 
 use Tempest\Router\Get;
+
+use function Tempest\root_path;
 use function Tempest\view;
 use App\models\Post;
 use App\Repositories\PostRepository;
@@ -27,7 +29,6 @@ final readonly class HomeController
             ->limit(3)
             ->with('user')
             ->all();
-
-        return view('../Views/home.view.php', posts: $posts);
+        return view(__DIR__ . '/../Views/home.view.php', posts: $posts);
     }
 }
