@@ -23,5 +23,20 @@
         "tempest/highlight": "^2.11",
         "spatie/yaml-front-matter": "^2.1",
         "tempest/core": "*"
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "./vendor/bin/tempest install framework",
+            "touch .gitignore",
+            "php tempest install vite --tailwind --npm",
+            "php tempest install auth",
+            "php tempest migrate:up",
+            "php tempest cyclone:add-user",
+            "php tempest cyclone:add-blog-post",
+            "php tempest cyclone:sync-posts",
+            "npm install -D @tailwindcss/typography",
+            "npm install && npm run dev"
+        ]
     }
 }
+
