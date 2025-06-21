@@ -88,63 +88,63 @@ final readonly class Cyclone
      *
      * @return void
      */
-    #[ConsoleCommand('cyclone:assets')]
-    public function assets(): void
-    {
-        // List of files to be copied with their sources and destinations
-        $filesToCopy = [
-            [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/img/logo.webp',
-                'destination' => './public/img/logo.webp'
-            ],
-            [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/main.entrypoint.css.stub',
-                'destination' => './app/main.entrypoint.css'
-            ],
-            [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/main.entrypoint.ts.stub',
-                'destination' => './app/main.entrypoint.ts'
-            ],
-            [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/public/img/blog/first-post.webp',
-                'destination' => './public/img/blog/first-post.webp'
-            ],
-            [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/content/blog/first-post.md',
-                'destination' => './content/blog/first-post.md'
-            ],
-            [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/content/blog/second-post.md',
-                'destination' => './content/blog/second-post.md'
-            ],
-        ];
+    // #[ConsoleCommand('cyclone:assets')]
+    // public function assets(): void
+    // {
+    //     // List of files to be copied with their sources and destinations
+    //     $filesToCopy = [
+    //         [
+    //             'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/img/logo.webp',
+    //             'destination' => './public/img/logo.webp'
+    //         ],
+    //         [
+    //             'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/main.entrypoint.css.stub',
+    //             'destination' => './app/main.entrypoint.css'
+    //         ],
+    //         [
+    //             'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/main.entrypoint.ts.stub',
+    //             'destination' => './app/main.entrypoint.ts'
+    //         ],
+    //         [
+    //             'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/public/img/blog/first-post.webp',
+    //             'destination' => './public/img/blog/first-post.webp'
+    //         ],
+    //         [
+    //             'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/content/blog/first-post.md',
+    //             'destination' => './content/blog/first-post.md'
+    //         ],
+    //         [
+    //             'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/content/blog/second-post.md',
+    //             'destination' => './content/blog/second-post.md'
+    //         ],
+    //     ];
 
-        // Browse each file to be copied
-        foreach ($filesToCopy as $file) {
-            $source = $file['source'];
-            $destination = $file['destination'];
-            $destinationDir = dirname($destination);
+    //     // Browse each file to be copied
+    //     foreach ($filesToCopy as $file) {
+    //         $source = $file['source'];
+    //         $destination = $file['destination'];
+    //         $destinationDir = dirname($destination);
 
-            // Check that the destination directory exists, if not create it
-            if (!is_dir($destinationDir)) {
-                if (!mkdir($destinationDir, 0755, true)) {
-                    echo "Error: Unable to create the directory $destinationDir.\n";
-                    continue; // Goes to the next file in the event of an error
-                }
-            }
+    //         // Check that the destination directory exists, if not create it
+    //         if (!is_dir($destinationDir)) {
+    //             if (!mkdir($destinationDir, 0755, true)) {
+    //                 echo "Error: Unable to create the directory $destinationDir.\n";
+    //                 continue; // Goes to the next file in the event of an error
+    //             }
+    //         }
 
-            // Check if the source file exists
-            if (file_exists($source)) {
-                if (copy($source, $destination)) {
-                    echo "The file " . basename($source) . " was successfully copied to $destinationDir.\n";
-                } else {
-                    echo "Error: Unable to copy file " . basename($source) . ".\n";
-                }
-            } else {
-                echo "Error: The source file $source does not exist.\n";
-            }
-        }
-    }
+    //         // Check if the source file exists
+    //         if (file_exists($source)) {
+    //             if (copy($source, $destination)) {
+    //                 echo "The file " . basename($source) . " was successfully copied to $destinationDir.\n";
+    //             } else {
+    //                 echo "Error: Unable to copy file " . basename($source) . ".\n";
+    //             }
+    //         } else {
+    //             echo "Error: The source file $source does not exist.\n";
+    //         }
+    //     }
+    // }
 
     #[ConsoleCommand('cyclone:info')]
     public function info(): void
