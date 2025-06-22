@@ -94,15 +94,15 @@ final readonly class Cyclone
         // List of files to be copied with their sources and destinations
         $filesToCopy = [
             [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/img/logo.webp',
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'app/Resources/img/logo.webp',
                 'destination' => './public/img/logo.webp'
             ],
             [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/main.entrypoint.css.stub',
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'app/Resources/main.entrypoint.css.stub',
                 'destination' => './app/main.entrypoint.css'
             ],
             [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/main.entrypoint.ts.stub',
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'app/Resources/main.entrypoint.ts.stub',
                 'destination' => './app/main.entrypoint.ts'
             ]
         ];
