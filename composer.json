@@ -28,12 +28,13 @@
         "post-create-project-cmd": [
             "./vendor/bin/tempest install framework",
             "touch .gitignore",
-            "php tempest install vite --tailwind --npm",
+            "php tempest install vite --tailwind",
             "php tempest install auth",
             "php tempest migrate:up",
             "php tempest cyclone:add-user",
             "php tempest cyclone:add-blog-post",
             "php tempest cyclone:sync-posts",
+            "php tempest cyclone:assets",
             "npm install -D @tailwindcss/typography",
             "npm install && npm run dev"
         ]
