@@ -88,7 +88,7 @@ final readonly class Cyclone
      *
      * @return void
      */
-    // #[ConsoleCommand('cyclone:assets')]
+    #[ConsoleCommand('cyclone:assets')]
     public function assets(): void
     {
         // List of files to be copied with their sources and destinations
@@ -104,19 +104,7 @@ final readonly class Cyclone
             [
                 'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/main.entrypoint.ts.stub',
                 'destination' => './app/main.entrypoint.ts'
-            ],
-    //         [
-    //             'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/public/img/blog/first-post.webp',
-    //             'destination' => './public/img/blog/first-post.webp'
-    //         ],
-    //         [
-    //             'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/content/blog/first-post.md',
-    //             'destination' => './content/blog/first-post.md'
-    //         ],
-    //         [
-    //             'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/content/blog/second-post.md',
-    //             'destination' => './content/blog/second-post.md'
-    //         ],
+            ]
         ];
 
         // Browse each file to be copied
