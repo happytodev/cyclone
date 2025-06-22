@@ -1,6 +1,7 @@
 .cache/
 .idea/
 vendor/
+.devdbrc
 .env
 composer.lock
 node_modules
