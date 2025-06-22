@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controllers;
+namespace Happytodev\Cyclone\Controllers;
 
-use App\Auth\User;
+use Happytodev\Cyclone\Auth\User;
 use DateTimeImmutable;
 use Tempest\View\View;
 
@@ -12,8 +12,8 @@ use Tempest\Router\Get;
 
 use function Tempest\root_path;
 use function Tempest\view;
-use App\models\Post;
-use App\Repositories\PostRepository;
+use Happytodev\Cyclone\models\Post;
+use Happytodev\Cyclone\Repositories\PostRepository;
 
 final readonly class HomeController
 {

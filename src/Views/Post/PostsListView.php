@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Views\Post;
+namespace Happytodev\Cyclone\Views\Post;
 
-use App\models\Post;
+use Happytodev\Cyclone\models\Post;
 use Tempest\View\View;
 use Tempest\View\IsView;
 

@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Commands;
+namespace Happytodev\Cyclone\Commands;
 
-use App\Auth\User;
-use App\models\Post;
+use Happytodev\Cyclone\Auth\User;
+use Happytodev\Cyclone\models\Post;
 use DateTimeImmutable;
 use Symfony\Component\Yaml\Yaml;
 use Tempest\Console\ConsoleCommand;
-use App\Repositories\PostRepository;
+use Happytodev\Cyclone\Repositories\PostRepository;
+use Tempest\Console\HasConsole;
 use Tempest\Console\Schedule;
 use Tempest\Console\Scheduler\Every;
 
@@ -17,6 +18,8 @@ use function Tempest\root_path;
 
 final readonly class Cyclone
 {
+    use HasConsole;
+
     private string $postsDir;
 
     public function __construct()
@@ -187,4 +190,67 @@ final readonly class Cyclone
         }
         return [];
     }
+
+    #[ConsoleCommand('cyclone:install')]
+    public function __invoke(): void
+    {
+        $this->info('Starting Cyclone CMS installation...');
+
+        // Step 1: Install Tempest framework
+        // $this->runCommand('./vendor/bin/tempest install framework', 'Error installing Tempest framework.');
+
+        // Step 2: Create .gitignore file
+        $this->runCommand('touch .gitignore', 'Error creating .gitignore file.');
+
+        // Step 3: Install Vite with Tailwind and npm
+        $this->runCommand('php tempest install vite --tailwind --npm', 'Error installing Vite with Tailwind.');
+
+        // Step 4: Install authentication module
+        $this->runCommand('php tempest install auth', 'Error installing authentication module.');
+
+        // Step 5: Run migrations
+        $this->runCommand('php tempest migrate:up', 'Error running migrations.');
+
+        // Step 6: Add a user
+        $this->runCommand('php tempest cyclone:add-user', 'Error adding user.');
+
+        // Step 7: Add a blog post
+        $this->runCommand('php tempest cyclone:add-blog-post', 'Error adding blog post.');
+
+        // Step 8: Copy assets
+        $this->runCommand('php tempest cyclone:assets', 'Error copying assets.');
+
+        // Step 9: Sync posts
+        $this->runCommand('php tempest cyclone:sync-posts', 'Error syncing posts.');
+
+        // Step 10: Install Tailwind Typography dependencies
+        $this->runCommand('npm install -D @tailwindcss/typography', 'Error installing @tailwindcss/typography.');
+
+        // Step 11: Install npm dependencies
+        $this->runCommand('npm install', 'Error installing npm dependencies.');
+
+        // Step 12: Run dev mode
+        $this->runCommand('npm run dev -- --no-open', 'Error running npm run dev.');
+
+        $this->success('Cyclone CMS installed successfully!');
+    }
+
+    /**
+     * Executes a shell command and displays an error if it fails.
+     *
+     * @param string $command The command to execute
+     * @param string $errorMessage The error message to display if the command fails
+     * @return void
+     */
+    private function runCommand(string $command, string $errorMessage): void
+    {
+        $this->info("Executing: {$command}");
+        exec($command, $output, $resultCode);
+
+        if ($resultCode !== 0) {
+            $this->error($errorMessage);
+            exit(1);
+        }
+    }
+}
 }

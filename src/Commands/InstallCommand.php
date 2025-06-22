@@ -12,6 +12,7 @@ final class InstallCommand
     #[ConsoleCommand('install')]
     public function __invoke(): void
     {
+        $this->runC
         $this->exec('./vendor/bin/tempest install framework');
         $this->exec('touch .gitignore');
         $this->exec('php tempest install vite --tailwind --npm');

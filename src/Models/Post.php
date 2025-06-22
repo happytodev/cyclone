@@ -1,8 +1,8 @@
 <?php
 
-namespace App\models;
+namespace Happytodev\Cyclone\models;
 
-use App\Auth\User;
+use Happytodev\Cyclone\Auth\User;
 use Tempest\Database\IsDatabaseModel;
 use Tempest\Router\Bindable;
 

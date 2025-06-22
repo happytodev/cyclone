@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repositories;
+namespace Happytodev\Cyclone\Repositories;
 
-use App\models\Post;
+use Happytodev\Cyclone\models\Post;
 use DateTimeImmutable;
 use Tempest\Database\Id;
 

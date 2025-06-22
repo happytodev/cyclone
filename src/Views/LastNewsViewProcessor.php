@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Views;
+namespace Happytodev\Cyclone\Views;
 
 use Tempest\View\View;
 use Tempest\View\ViewProcessor;
-use App\models\Post;
+use Happytodev\Cyclone\models\Post;
 
 final class LastNewsViewProcessor implements ViewProcessor
 {

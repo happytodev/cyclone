@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers;
+namespace Happytodev\Cyclone\Controllers;
 
 use Tempest\View\View;
 use Tempest\Router\Get;
@@ -9,8 +9,8 @@ use Tempest\Http\Request;
 use function Tempest\view;
 use function Tempest\root_path;
 
-use App\Views\Post\PostsListView;
-use App\Repositories\PostRepository;
+use Happytodev\Cyclone\Views\Post\PostsListView;
+use Happytodev\Cyclone\Repositories\PostRepository;
 use League\CommonMark\MarkdownConverter;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 use League\CommonMark\Environment\Environment;
