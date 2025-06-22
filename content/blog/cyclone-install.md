@@ -1,13 +1,23 @@
 ---
-title: "First post"
-slug: "first-post"
-tldr: "A trully really first post on Cyclone."
-created_at: "2025-05-18 12:43:00"
-published_at: "2025-05-18 13:43:00"
+title: "How to install Cyclone?"
+slug: "how-to-install-cyclone"
+tldr: "Your very first steps with your new CMS."
+created_at: "2025-06-21 12:42:00"
+published_at: "2025-06-21 12:42:00"
 user_id: 1
 cover_image: "first-post.webp"
 ---
-# First post!
+# How to install Cyclone?
+
+It's very easy.
+
+First, you need to create your project with : 
+
+```bash
+composer create-project happytodev/cyclone yourNewWebsite --stability=alpha
+```
+
+
 
 Lorem ipsum
 

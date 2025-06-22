@@ -47,28 +47,6 @@ final readonly class Cyclone
                 published: true
             );
         }
-
-        Post::create(
-            title: 'First post',
-            slug: 'first-post',
-            tldr: 'A trully really first post on Cyclone.',
-            markdown_file_path: 'content/blog/first-post.md',
-            user: $user,
-            published: true,
-            created_at: new DateTimeImmutable(),
-            published_at: new DateTimeImmutable()
-        );
-
-        Post::create(
-            title: 'Second post',
-            slug: 'second-post',
-            tldr: 'A trully really second post on Cyclone.',
-            markdown_file_path: 'content/blog/second-post.md',
-            user: $user,
-            published: true,
-            created_at: new DateTimeImmutable(),
-            published_at: new DateTimeImmutable()
-        );
     }
 
     #[ConsoleCommand('cyclone:add-user')]
@@ -137,7 +115,7 @@ final readonly class Cyclone
     #[ConsoleCommand('cyclone:info')]
     public function info(): void
     {
-        echo "Cyclone v1.0.0-alpha.12\n";
+        echo "Cyclone v1.0.0-alpha.13\n";
     }
 
     #[Schedule(Every::HOUR)]

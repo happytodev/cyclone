@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../tempest-framework"
+		},
+		{
+			"path": "../tempestcyclonedemo"
+		},
+		{
+			"path": "../tempestcyclonedemo2"
+		},
+		{
+			"path": "../cyclone-website"
+		}
+	],
+	"settings": {}
+}
