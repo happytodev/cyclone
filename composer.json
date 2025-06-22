@@ -5,7 +5,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "HappyToDev\\Cyclone\\": "src/"
+            "Happytodev\\Cyclone\\": "src/"
         }
     },
     "authors": [
@@ -29,7 +29,8 @@
     ],
     "scripts": {
         "post-install-cmd": [
-            "@php ./bin/cyclone install"
+            "@php ./vendor/bin/tempest install framework",
+            "@php tempest cyclone:install"
         ]
     }
 }
