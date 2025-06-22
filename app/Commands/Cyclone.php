@@ -93,10 +93,10 @@ final readonly class Cyclone
     {
         // List of files to be copied with their sources and destinations
         $filesToCopy = [
-    //         [
-    //             'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/img/logo.webp',
-    //             'destination' => './public/img/logo.webp'
-    //         ],
+            [
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/img/logo.webp',
+                'destination' => './public/img/logo.webp'
+            ],
             [
                 'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/app/Resources/main.entrypoint.css.stub',
                 'destination' => './app/main.entrypoint.css'
@@ -149,7 +149,7 @@ final readonly class Cyclone
     #[ConsoleCommand('cyclone:info')]
     public function info(): void
     {
-        echo "Cyclone v1.0.0-alpha.6\n";
+        echo "Cyclone v1.0.0-alpha.9\n";
     }
 
     #[Schedule(Every::HOUR)]
