@@ -2,7 +2,7 @@
 
 namespace Happytodev\Cyclone\models;
 
-use Happytodev\Cyclone\Auth\User;
+use App\Auth\User;
 use Tempest\Database\IsDatabaseModel;
 use Tempest\Router\Bindable;
 

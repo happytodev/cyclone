@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Happytodev\Cyclone\Controllers;
 
-use Happytodev\Cyclone\Auth\User;
+use App\Auth\User;
 use DateTimeImmutable;
 use Tempest\View\View;
 
