@@ -206,19 +206,19 @@ final readonly class Cyclone
     #[ConsoleCommand('cyclone:install')]
     public function __invoke(): void
     {
-        $this->info('Starting Cyclone CMS installation...');
+        $this->console->info('Starting Cyclone CMS installation...');
 
         // Step 1: Install Tempest framework
-        // $this->runCommand('./vendor/bin/tempest install framework', 'Error installing Tempest framework.');
+        $this->runCommand('./vendor/bin/tempest install framework --no-interaction', 'Error installing Tempest framework.');
 
         // Step 2: Create .gitignore file
         $this->runCommand('touch .gitignore', 'Error creating .gitignore file.');
 
         // Step 3: Install Vite with Tailwind and npm
-        $this->runCommand('php tempest install vite --tailwind --npm', 'Error installing Vite with Tailwind.');
+        $this->runCommand('php tempest install vite --tailwind --no-interaction', 'Error installing Vite with Tailwind.');
 
         // Step 4: Install authentication module
-        $this->runCommand('php tempest install auth', 'Error installing authentication module.');
+        $this->runCommand('php tempest install auth --no-interaction', 'Error installing authentication module.');
 
         // Step 5: Run migrations
         $this->runCommand('php tempest migrate:up', 'Error running migrations.');
@@ -256,11 +256,11 @@ final readonly class Cyclone
      */
     private function runCommand(string $command, string $errorMessage): void
     {
-        $this->info("Executing: {$command}");
+        $this->console->info("Executing: {$command}");
         exec($command, $output, $resultCode);
 
         if ($resultCode !== 0) {
-            $this->error($errorMessage);
+            $this->console->error($errorMessage);
             exit(1);
         }
     }
