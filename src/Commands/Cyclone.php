@@ -3,7 +3,7 @@
 namespace Happytodev\Cyclone\Commands;
 
 use App\Auth\User;
-use Happytodev\Cyclone\models\Post;
+use Happytodev\Cyclone\Models\Post;
 use DateTimeImmutable;
 use Symfony\Component\Yaml\Yaml;
 use Tempest\Console\ConsoleCommand;

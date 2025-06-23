@@ -12,7 +12,7 @@ use Tempest\Router\Get;
 
 use function Tempest\root_path;
 use function Tempest\view;
-use Happytodev\Cyclone\models\Post;
+use Happytodev\Cyclone\Models\Post;
 use Happytodev\Cyclone\Repositories\PostRepository;
 
 final readonly class HomeController

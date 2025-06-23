@@ -1,6 +1,6 @@
 <?php
 
-namespace Happytodev\Cyclone\models;
+namespace Happytodev\Cyclone\Models;
 
 use App\Auth\User;
 use Tempest\Database\IsDatabaseModel;

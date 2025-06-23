@@ -2,7 +2,7 @@
 
 namespace Happytodev\Cyclone\Repositories;
 
-use Happytodev\Cyclone\models\Post;
+use Happytodev\Cyclone\Models\Post;
 use DateTimeImmutable;
 use Tempest\Database\Id;
 

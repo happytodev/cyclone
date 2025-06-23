@@ -2,7 +2,7 @@
 
 namespace Happytodev\Cyclone\Views\Post;
 
-use Happytodev\Cyclone\models\Post;
+use Happytodev\Cyclone\Models\Post;
 use Tempest\View\View;
 use Tempest\View\IsView;
 

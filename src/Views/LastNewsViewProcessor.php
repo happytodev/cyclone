@@ -4,7 +4,7 @@ namespace Happytodev\Cyclone\Views;
 
 use Tempest\View\View;
 use Tempest\View\ViewProcessor;
-use Happytodev\Cyclone\models\Post;
+use Happytodev\Cyclone\Models\Post;
 
 final class LastNewsViewProcessor implements ViewProcessor
 {
