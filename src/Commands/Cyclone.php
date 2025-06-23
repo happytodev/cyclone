@@ -2,7 +2,7 @@
 
 namespace Happytodev\Cyclone\Commands;
 
-use Happytodev\Cyclone\Auth\User;
+use App\Auth\User;
 use Happytodev\Cyclone\models\Post;
 use DateTimeImmutable;
 use Symfony\Component\Yaml\Yaml;
@@ -75,17 +75,29 @@ final readonly class Cyclone
         // List of files to be copied with their sources and destinations
         $filesToCopy = [
             [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'app/Resources/img/logo.webp',
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/img/logo.webp',
                 'destination' => './public/img/logo.webp'
             ],
             [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'app/Resources/main.entrypoint.css.stub',
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/img/blog/first-post.webp',
+                'destination' => './public/img/blog/first-post.webp'
+            ],
+            [
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/main.entrypoint.css.stub',
                 'destination' => './app/main.entrypoint.css'
             ],
             [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'app/Resources/main.entrypoint.ts.stub',
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/main.entrypoint.ts.stub',
                 'destination' => './app/main.entrypoint.ts'
-            ]
+            ],
+            [
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/content/blog/cyclone-install.md',
+                'destination' => './content/blog/cyclone-install.md'
+            ],
+            [
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/content/blog/second-post.md',
+                'destination' => './content/blog/second-post.md'
+            ],
         ];
 
         // Browse each file to be copied
@@ -252,5 +264,4 @@ final readonly class Cyclone
             exit(1);
         }
     }
-}
 }
