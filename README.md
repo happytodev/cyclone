@@ -7,15 +7,34 @@ Cyclone is the first blog engine made with Tempest framework.
 
 Currently Cyclone is in alpha phase.
 
-Create a new Tempest project by using : 
+Create a new forlder for your project : 
 
 ```bash
-composer create-project happytodev/cyclone myawesomewebsite --stability=alpha
+mkdir mynewblog
+cd mynewblog
 ```
 
-And answer yes to all questions the installer asks you.
+Launch `composer init` and when it asks you for minimum stability, enter `dev`.
 
-Important : For now, choose `npm` as package manager please.
+Edit your composer.json and add the following line 
+
+`    "prefer-stable": true,`
+
+under
+
+`    "minimum-stability": "dev",`
+
+Next, add Cyclone as dependency : 
+
+```bash
+composer require happytodev/cyclone
+```
+
+When install is finished, launch the following command : 
+
+```bash
+./vendor/bin/tempest cyclone:install
+```
 
 ## Add content
 
