@@ -17,7 +17,8 @@ final class CreatePostTable implements DatabaseMigration
             ->primary()
             // limit title to 240 caracters to keep 15 caracters to slug
             ->varchar('title', 240)
-            ->varchar('slug')->unique()
+            ->varchar('slug')
+            ->unique('slug')
             ->varchar('tldr')
             ->varchar('markdown_file_path')
             ->varchar('cover_image', nullable: true)
