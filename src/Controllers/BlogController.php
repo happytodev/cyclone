@@ -25,29 +25,30 @@ final class BlogController
     ) {}
 
     #[Get('/blog')]
-    public function __invoke(Request $request): View
+    public function index(Request $request): View
     {
         // Number of posts per page
-        $perPage = 9; 
+        $perPage = 9;
 
         // Current page, minimum 1
-        $page = max(1, (int)$request->get('page', 1)); 
-        
+        $page = max(1, (int)$request->get('page', 1));
+
         // Calculate offset for pagination
-        $offset = ($page - 1) * $perPage; 
+        $offset = ($page - 1) * $perPage;
 
         // Get paginated posts
-        $posts = $this->repository->getPosts($perPage, $offset); 
-        
+        $posts = $this->repository->getPosts($perPage, $offset);
+
         // Get total number of posts
-        $totalPosts = $this->repository->getTotalPosts(); 
-        
+        $totalPosts = $this->repository->getTotalPosts();
+
         // Calculate total number of pages
-        $totalPages = (int)ceil($totalPosts / $perPage); 
+        $totalPages = (int)ceil($totalPosts / $perPage);
 
         // Pass data to the view
-        return new PostsListView($posts, $page, $totalPages); 
+        return new PostsListView($posts, $page, $totalPages);
     }
+
 
     #[Get(uri: '/blog/{slug}')]
     public function show(string $slug): View
@@ -55,6 +56,7 @@ final class BlogController
         $post = $this->repository->findBySlug($slug);
 
         $markdownPath = root_path() . DIRECTORY_SEPARATOR . $post->markdown_file_path;
+
         $environment = new Environment();
 
         $environment
