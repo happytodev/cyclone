@@ -54,6 +54,24 @@ final readonly class Cyclone
         }
     }
 
+    /**
+     * Add a default user. Using it in install process
+     *
+     * @return void
+     */
+    #[ConsoleCommand('cyclone:add-default-user')]
+    public function addDefaultUser(): void
+    {
+
+        $user = new User(
+            name: 'John Doe',
+            email: 'jdoe@gmail.com',
+        )
+            ->setPassword('password')
+            ->save()
+            ->grantPermission('admin');
+    }
+
     #[ConsoleCommand('cyclone:add-user')]
     public function adduser(): void
     {
@@ -237,22 +255,25 @@ final readonly class Cyclone
         // Step 6: Run migrations
         $this->runCommand('php tempest migrate:up', 'Error running migrations.');
 
-        // Step 7: Add a blog post
+        // Step 7: Add a default user
+        $this->runCommand('php tempest cyclone:add-default-user', 'Error adding default user.');
+
+        // Step 8: Add a blog post
         $this->runCommand('php tempest cyclone:add-blog-post', 'Error adding blog post.');
 
-        // Step 8: Copy assets
+        // Step 9: Copy assets
         $this->runCommand('php tempest cyclone:assets', 'Error copying assets.');
 
-        // Step 9: Sync posts
+        // Step 10: Sync posts
         $this->runCommand('php tempest cyclone:sync-posts', 'Error syncing posts.');
 
-        // Step 10: Install Tailwind Typography dependencies
+        // Step 11: Install Tailwind Typography dependencies
         $this->runCommand('npm install -D @tailwindcss/typography', 'Error installing @tailwindcss/typography.');
 
-        // Step 11: Install npm dependencies
+        // Step 12: Install npm dependencies
         $this->runCommand('npm install', 'Error installing npm dependencies.');
 
-        // Step 12: Run dev mode
+        // Step 13: Run dev mode
         $this->runCommand('npm run dev -- --no-open', 'Error running npm run dev.');
 
         $this->success('Cyclone CMS installed successfully!');
