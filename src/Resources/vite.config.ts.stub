@@ -1,0 +1,15 @@
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "vite";
+import tempest from "vite-plugin-tempest";
+
+export default defineConfig({
+  server: {
+    watch: {
+      ignored: [
+        "**/.tempest/**", // Ignore all cache files in .tempest to avoird reloading constantly the page in loop
+		    "**/content/**", 
+      ],
+    },
+  },
+  plugins: [tailwindcss(), tempest()],
+});

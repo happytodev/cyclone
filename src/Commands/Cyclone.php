@@ -3,18 +3,20 @@
 namespace Happytodev\Cyclone\Commands;
 
 use App\Auth\User;
-use Happytodev\Cyclone\Models\Post;
 use DateTimeImmutable;
-use Symfony\Component\Yaml\Yaml;
-use Tempest\Console\ConsoleCommand;
-use Happytodev\Cyclone\Repositories\PostRepository;
-use Tempest\Console\HasConsole;
 use Tempest\Console\Schedule;
-use Tempest\Console\Scheduler\Every;
+use function Tempest\root_path;
+use Tempest\Console\HasConsole;
+use Symfony\Component\Yaml\Yaml;
+use Happytodev\Cyclone\Models\Post;
+use Tempest\Console\ConsoleCommand;
+use Tempest\Validation\Rules\Email;
 
 use function Tempest\Database\Query;
+use Tempest\Console\Scheduler\Every;
+use Tempest\Validation\Rules\Length;
 use function Tempest\Support\Arr\every;
-use function Tempest\root_path;
+use Happytodev\Cyclone\Repositories\PostRepository;
 
 final readonly class Cyclone
 {
@@ -55,11 +57,16 @@ final readonly class Cyclone
     #[ConsoleCommand('cyclone:add-user')]
     public function adduser(): void
     {
+
+        $name = $this->console->ask('What should be the name?', validation: [new Length(min: 3)]);
+        $email = $this->console->ask('What should be the email?', validation: [new Email()]);
+        $password = $this->console->ask('What should be the password?', validation: [new Length(min: 8)]);
+
         $user = new User(
-            name: 'Happy',
-            email: 'happytodev@gmail.com',
+            name: $name,
+            email: $email,
         )
-            ->setPassword('password')
+            ->setPassword($password)
             ->save()
             ->grantPermission('admin');
     }
@@ -89,6 +96,10 @@ final readonly class Cyclone
             [
                 'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/main.entrypoint.ts.stub',
                 'destination' => './app/main.entrypoint.ts'
+            ],
+            [
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/vite.config.ts.stub',
+                'destination' => './vite.config.ts'
             ],
             [
                 'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/content/blog/cyclone-install.md',
