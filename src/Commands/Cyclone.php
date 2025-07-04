@@ -34,11 +34,7 @@ final readonly class Cyclone
     {
         $repository = new PostRepository();
 
-        // $postCounter = $repository->getTotalPosts() + 1;
-
-        $user = User::select()
-            ->where('email == ?', 'happytodev@gmail.com')
-            ->first();
+        $user = User::select()->first();
 
         for ($i = 0; $i < 30; $i++) {
             $post = Post::create(
