@@ -25,7 +25,7 @@ final class CreatePostTable implements DatabaseMigration
             ->datetime('created_at')
             ->datetime('published_at', nullable: true)
             ->boolean('published', nullable: false, default: false)
-            ->integer('user_id', unsigned: true);
+            ->belongsTo('posts.user_id', 'users.id');
     }
 
     public function down(): QueryStatement|null
