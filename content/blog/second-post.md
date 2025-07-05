@@ -6,6 +6,7 @@ created_at: "2025-06-22 12:43:00"
 published_at: "2025-06-22 13:43:00"
 user_id: 1
 cover_image: "first-post.webp"
+published: true
 ---
 
 # Second post 2!
