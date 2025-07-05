@@ -25,5 +25,5 @@ final class Post
 
     public bool $published;
 
-    public ?User $user = null;
+    public int $user_id;
 }
