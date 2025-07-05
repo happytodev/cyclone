@@ -2,6 +2,7 @@
 
 namespace Happytodev\Cyclone\Models;
 
+
 use App\Auth\User;
 use Tempest\Database\IsDatabaseModel;
 
@@ -25,5 +26,5 @@ final class Post
 
     public bool $published;
 
-    public int $user_id;
+    public ?User $user = null;
 }
