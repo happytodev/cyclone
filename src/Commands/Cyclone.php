@@ -42,7 +42,7 @@ final readonly class Cyclone
                 slug: 'lorem-ipsum-' . $i,
                 tldr: 'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.',
                 markdown_file_path: 'content/blog/lorem.md',
-                user_id: $user->id->id,
+                user: $user,
                 created_at: new DateTimeImmutable(),
                 published_at: new DateTimeImmutable(),
                 published: true
@@ -181,7 +181,7 @@ final readonly class Cyclone
                 'slug' => $frontmatter['slug'],
                 'title' => $frontmatter['title'],
                 'tldr' => $frontmatter['tldr'],
-                'user_id' => $user->id->id,
+                'user' => $user,
                 'markdown_file_path' => $file,
                 'created_at' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $frontmatter['created_at']),
                 'published_at' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $frontmatter['published_at']),
