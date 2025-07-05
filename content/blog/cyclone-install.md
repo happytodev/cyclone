@@ -6,6 +6,7 @@ created_at: "2025-06-21 12:42:00"
 published_at: "2025-06-21 12:42:00"
 user_id: 1
 cover_image: "first-post.webp"
+published: true
 ---
 # How to install Cyclone?
 
