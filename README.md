@@ -3,41 +3,96 @@
 
 Cyclone is the first blog engine made with Tempest framework.
 
-## Install
+## How to install Cyclone?
 
-Currently Cyclone is in alpha phase.
+It's very easy.
 
-Create a new forlder for your project : 
+First, you need to create a folder for your project: 
 
 ```bash
-mkdir mynewblog
-cd mynewblog
+mkdir cyclone-demo
+cd cyclone-demo
 ```
 
-Launch `composer init` and when it asks you for minimum stability, enter `dev`.
+Next, as Cyclone is in alpha, you have to set a minimal composer.json to start. So edit your composer.json with your favorite editor (for example `nano composer.json`) and add this content:
 
-Edit your composer.json and add the following line 
+```json
+{
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
+```
 
-`    "prefer-stable": true,`
-
-under
-
-`    "minimum-stability": "dev",`
-
-Next, add Cyclone as dependency : 
+Next, 
 
 ```bash
 composer require happytodev/cyclone
 ```
 
-When install is finished, launch the following command : 
+When composer is done, lauch the installer:
 
 ```bash
 ./vendor/bin/tempest cyclone:install
 ```
 
-## Add content
+At the end of install, if everything is ok, you can launch your server and go to your new blog:
 
-For blog posts, put your content in `content/blog` folder.
-Image for blog posts must take place in `public/img/blog`
+https://cyclone-demo.test 
 
+
+Last point, set the url of your project in the `.env` file.
+
+```bash
+nano .env 
+```
+
+And set the `BASE_URI` variable with your url.
+
+```env
+...
+# The base URI that's used for all generated URIs
+BASE_URI=https://cyclone-demo.test
+...
+```
+
+And voilà!
+
+
+## How to add content in Cyclone?
+
+Just by adding some markdown files in the `content/blog` folder.
+
+
+## Roadmap
+
+A lot of work to do, but the main points are:
+- [ ] Add a login page
+- [ ] Add a dashboard
+- [ ] Add a way to add content
+- [ ] Add a way to edit content
+- [ ] Add a way to delete content
+- [ ] Add pages (CMS part)
+- [ ] Add categories
+- [ ] Add tags
+- [ ] Add comments
+- [ ] Add a search engine
+- [ ] Add a way to add a custom theme
+- [ ] Add a way to add a custom plugin
+- etc...
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## Security
+ Vulnerabilities should be reported to happytodev@gmail.com.
+ Please see [SECURITY](SECURITY.md) for more information.
+
+## Credits
+
+- [Frédéric Blanc](https://github.com/happytodev)
+- [All Contributors](../../contributors)
