@@ -1,10 +1,12 @@
 <article class="w-full bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
     <!-- Main image -->
     <div class="h-48 w-full overflow-hidden">
-        <img
-            src="/img/blog/{{ $lastnew->cover_image }}"
-            alt="{{ $lastnew->title }}"
-            class="w-full h-full object-cover">
+        <a href="/blog/{{ $lastnew->slug }}">
+            <img
+                src="/img/blog/{{ $lastnew->cover_image }}"
+                alt="{{ $lastnew->title }}"
+                class="w-full h-full object-cover">
+        </a>
     </div>
 
     <!-- Card content -->
