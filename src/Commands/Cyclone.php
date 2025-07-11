@@ -93,15 +93,11 @@ final readonly class Cyclone
     #[ConsoleCommand('cyclone:assets')]
     public function assets(): void
     {
-        // List of files to be copied with their sources and destinations
+        // List of files and directories to be copied with their sources and destinations
         $filesToCopy = [
             [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/img/logo.webp',
-                'destination' => './public/img/logo.webp'
-            ],
-            [
-                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/img/blog/first-post.webp',
-                'destination' => './public/img/blog/first-post.webp'
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/img',
+                'destination' => './public/img'
             ],
             [
                 'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/main.entrypoint.css.stub',
@@ -123,31 +119,81 @@ final readonly class Cyclone
                 'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/content/blog/second-post.md',
                 'destination' => './content/blog/second-post.md'
             ],
+            [
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/favicon',
+                'destination' => './public/favicon'
+            ],
         ];
 
-        // Browse each file to be copied
+        // Browse each item to be copied
         foreach ($filesToCopy as $file) {
             $source = $file['source'];
             $destination = $file['destination'];
-            $destinationDir = dirname($destination);
 
-            // Check that the destination directory exists, if not create it
-            if (!is_dir($destinationDir)) {
-                if (!mkdir($destinationDir, 0755, true)) {
-                    echo "Error: Unable to create the directory $destinationDir.\n";
-                    continue; // Goes to the next file in the event of an error
+            if (is_dir($source)) {
+                // If it's a directory, copy recursively
+                $this->copyDirectory($source, $destination);
+                echo "The directory " . basename($source) . "has been copied to $destination.\n";
+            } elseif (is_file($source)) {
+                // If it's a file, check and create the destination directory
+                $destinationDir = dirname($destination);
+                if (!is_dir($destinationDir)) {
+                    if (!mkdir($destinationDir, 0755, true)) {
+                        echo "Error: Unable to create the $destinationDir directory.\n";
+                        continue;
+                    }
                 }
-            }
-
-            // Check if the source file exists
-            if (file_exists($source)) {
+                // Copy the file
                 if (copy($source, $destination)) {
-                    echo "The file " . basename($source) . " was successfully copied to $destinationDir.\n";
+                    echo "The file " . basename($source) . "has been successfully copied to $destination.\n";
                 } else {
-                    echo "Error: Unable to copy file " . basename($source) . ".\n";
+                    echo "Error: Unable to copy the file " . basename($source) . ".\n";
                 }
             } else {
-                echo "Error: The source file $source does not exist.\n";
+                echo "Error: The source $source does not exist or is not a file or directory.\n";
+            }
+        }
+    }
+
+    /**
+     * Recursively copies a directory and its contents to a destination
+     */
+    private function copyDirectory(string $source, string $destination): void
+    {
+        // Check that the source is a directory
+        if (!is_dir($source)) {
+            echo "Error: The source $source is not a directory.\n";
+            return;
+        }
+
+        // Create the destination directory if it does not exist
+        if (!is_dir($destination)) {
+            if (!mkdir($destination, 0755, true)) {
+                echo "Error: Unable to create the $destination directory.\n";
+                return;
+            }
+        }
+
+        // List items in the source directory
+        $items = scandir($source);
+        foreach ($items as $item) {
+            if ($item == '.' || $item == '..') {
+                continue; // Ignore . and ..
+            }
+
+            $srcPath = $source . DIRECTORY_SEPARATOR . $item;
+            $destPath = $destination . DIRECTORY_SEPARATOR . $item;
+
+            if (is_dir($srcPath)) {
+                // If it is a sub-directory, call recursively
+                $this->copyDirectory($srcPath, $destPath);
+            } elseif (is_file($srcPath)) {
+                // If it's a file, copy it
+                if (!copy($srcPath, $destPath)) {
+                    echo "Error: Unable to copy file $srcPath to $destPath.\n";
+                }
+            } else {
+                echo "Warning: $srcPath is neither a file nor a directory, and is ignored.\n";
             }
         }
     }
