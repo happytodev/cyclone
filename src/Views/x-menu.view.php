@@ -43,7 +43,7 @@
                             style="display: block;">
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                                 <x-post :foreach="$lastnews as $lastnew">
-                                    <x-card />
+                                    <x-card :lastnew="$lastnew" />
                                 </x-post>
                                 <x-post :forelse>
                                     <p class="text-center text-gray-600 mt-8">It's quite empty here…</p>
