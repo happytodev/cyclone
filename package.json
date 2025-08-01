@@ -10,5 +10,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build"
+  },
+  "dependencies": {
+    "@milkdown/core": "^7.15.0",
+    "@milkdown/crepe": "^7.15.0",
+    "@milkdown/kit": "^7.15.0",
+    "@milkdown/preset-commonmark": "^7.15.0",
+    "@milkdown/theme-nord": "^7.15.0",
+    "@uiw/codemirror-theme-vscode": "^4.23.14"
   }
 }
