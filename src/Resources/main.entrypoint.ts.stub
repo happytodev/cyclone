@@ -1,1 +1,32 @@
 console.log('🌊')
+import { Crepe } from "@milkdown/crepe";
+import "@milkdown/crepe/theme/common/style.css";
+import "@milkdown/crepe/theme/frame.css";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const editorElement = document.querySelector("#editor");
+  const markdownContent = editorElement.getAttribute("data-markdown") || "";
+
+  const crepe = new Crepe({
+    root: "#editor",
+    defaultValue: markdownContent,
+  });
+
+  crepe.create().then(() => {
+    console.log("Milkdown editor initialised with existing Markdown content");
+
+    // Update the textarea before submitting the form
+    const form = document.querySelector("#postForm");
+    form.addEventListener("submit", (event) => {
+      const markdownInput = document.querySelector("#markdownInput");
+      markdownInput.value = crepe.getMarkdown(); // Retrieve modified Markdown content
+      console.log(
+        "Markdown content updated in textarea before form submission"
+      );
+      // Optionally, you can prevent the form submission for debugging purposes
+      //   event.preventDefault();
+      //   console.log("Form submission prevented for debugging");
+      //   console.log("Markdown content:", crepe.getMarkdown());
+    });
+  });
+});
