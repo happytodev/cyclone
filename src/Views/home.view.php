@@ -106,7 +106,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             <!-- Last 3 posts -->
                             <x-post :foreach="$posts as $lastnew" >
-                                <x-card />
+                                <x-card :lastnew="$lastnew" />
                             </x-post>
                             <x-post :forelse>
                                 <p class="text-center text-gray-600 mt-8">It's quite empty here…</p>
