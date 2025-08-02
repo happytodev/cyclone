@@ -198,10 +198,11 @@ final readonly class Cyclone
         }
     }
 
+
     #[ConsoleCommand('cyclone:info')]
     public function info(): void
     {
-        echo "Cyclone v1.0.0-alpha.15\n";
+        echo "Cyclone v1.0.0-alpha\n";
     }
 
     #[Schedule(Every::HOUR)]
@@ -223,6 +224,14 @@ final readonly class Cyclone
                 ->where('id == ?', $frontmatter['user_id'])
                 ->first();
 
+            // Handle empty cover_image
+            $coverImage = $frontmatter['cover_image'] ?? '';
+            if (empty($coverImage)) {
+                ll($coverImage, empty($coverImage));
+                $coverImage = $this->generateCoverImage($frontmatter['title'], $slug);
+                ll($coverImage);
+            }
+
             $postData = [
                 'slug' => $frontmatter['slug'],
                 'title' => $frontmatter['title'],
@@ -231,7 +240,7 @@ final readonly class Cyclone
                 'markdown_file_path' => $file,
                 'created_at' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $frontmatter['created_at']),
                 'published_at' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $frontmatter['published_at']),
-                'cover_image' => $frontmatter['cover_image'] ?? '',
+                'cover_image' => $coverImage,
                 'published' => (bool) $frontmatter['published'] ?? false,
             ];
 
@@ -279,51 +288,270 @@ final readonly class Cyclone
         return [];
     }
 
+
+    /**
+     * Generate a cover image with a black background and white text containing the post title.
+     *
+     * @param string $title The title of the post
+     * @param string $slug The slug of the post for naming the image
+     * @return string The relative path to the generated image or empty string on failure
+     */
+    private function generateCoverImage(string $title, string $slug): string
+    {
+        ll('Entering generateCoverImage');
+        $destinationDir = './public/img/blog/';
+        $imageFilename = $slug . '-cover.png';
+        $imagePath = $destinationDir . $imageFilename;
+
+        // Ensure the destination directory exists
+        if (!is_dir($destinationDir)) {
+            if (!mkdir($destinationDir, 0755, true)) {
+                $this->console->error("Unable to create directory $destinationDir.");
+                return '';
+            }
+        }
+
+        // Create image: 1200x600 pixels
+        $image = imagecreatetruecolor(1200, 600);
+        if (!$image) {
+            $this->console->error("Failed to create image for post: $title");
+            return '';
+        }
+
+        // Allocate colors
+        $black = imagecolorallocate($image, 0, 0, 0); // Black background
+        $textColor = imagecolorallocate($image, 85, 172, 238); // Cyclone blue for text
+
+        // Fill background
+        imagefill($image, 0, 0, $black);
+
+        // Define font path (adjust to your system's font or bundle a .ttf file)
+        $fontPath = './vendor/happytodev/cyclone/src/Resources/fonts/DejaVuSans.ttf'; // Example path
+        if (!file_exists($fontPath)) {
+            $this->console->error("Font file not found at $fontPath");
+            imagedestroy($image);
+            return '';
+        }
+
+        // Wrap text to fit within image
+        $fontSize = 40;
+        $maxWidth = 1000; // Maximum text width
+        $textBox = $this->wrapText($title, $fontSize, $fontPath, $maxWidth);
+
+        // Calculate text position to center it
+        $imageWidth = 1200;
+        $imageHeight = 600;
+        $textX = (int) (($imageWidth - $textBox['width']) / 2);
+        $textY = (int) (($imageHeight - $textBox['height']) / 2 + $textBox['height'] - $textBox['descent']);
+
+        // Add text to image
+        foreach ($textBox['lines'] as $index => $line) {
+            imagettftext(
+                $image,
+                $fontSize,
+                0, // Angle
+                $textX,
+                $textY + ($index * ($fontSize + 10)), // Line spacing
+                $textColor,
+                $fontPath,
+                $line
+            );
+        }
+
+        // Save image
+        if (!imagepng($image, $imagePath)) {
+            ll("Failed to save image for post: $title");
+            $this->console->error("Failed to save image for post: $title");
+            imagedestroy($image);
+            return '';
+        }
+
+        // Free memory
+        imagedestroy($image);
+
+        return $imageFilename;
+    }
+
+    /**
+     * Wrap text to fit within a specified width for image rendering.
+     *
+     * @param string $text The text to wrap
+     * @param float $fontSize The font size
+     * @param string $fontPath The path to the TrueType font
+     * @param int $maxWidth The maximum width in pixels
+     * @return array Contains wrapped lines, total width, height, and descent
+     */
+    private function wrapText(string $text, float $fontSize, string $fontPath, int $maxWidth): array
+    {
+        $words = explode(' ', $text);
+        $lines = [];
+        $currentLine = '';
+        $maxLineWidth = 0;
+
+        foreach ($words as $word) {
+            $testLine = $currentLine ? "$currentLine $word" : $word;
+            $box = imagettfbbox($fontSize, 0, $fontPath, $testLine);
+            $width = $box[2] - $box[0];
+
+            if ($width <= $maxWidth) {
+                $currentLine = $testLine;
+            } else {
+                if ($currentLine) {
+                    $lines[] = $currentLine;
+                    $lineBox = imagettfbbox($fontSize, 0, $fontPath, $currentLine);
+                    $maxLineWidth = max($maxLineWidth, $lineBox[2] - $lineBox[0]);
+                }
+                $currentLine = $word;
+            }
+        }
+
+        if ($currentLine) {
+            $lines[] = $currentLine;
+            $lineBox = imagettfbbox($fontSize, 0, $fontPath, $currentLine);
+            $maxLineWidth = max($maxLineWidth, $lineBox[2] - $lineBox[0]);
+        }
+
+        // Calculate total height and descent
+        $box = imagettfbbox($fontSize, 0, $fontPath, 'A');
+        $lineHeight = $box[1] - $box[7]; // Ascent - descent
+        $descent = -$box[7]; // Positive descent value
+        $totalHeight = count($lines) * ($fontSize + 10) - 10; // Line spacing
+
+        return [
+            'lines' => $lines,
+            'width' => $maxLineWidth,
+            'height' => $totalHeight,
+            'descent' => $descent,
+        ];
+    }
+
     #[ConsoleCommand('cyclone:install')]
     public function __invoke(): void
     {
         $this->console->info('Starting Cyclone CMS installation...');
-
+        
         // Step 1: Install Tempest framework
-        $this->runCommand('./vendor/bin/tempest install framework --no-interaction', 'Error installing Tempest framework.');
-
+        $this->console->info('➡️ Starting TempestPHP installation...');
+        $this->runCommand('./vendor/bin/tempest install framework --no-interaction', '❌ Error installing Tempest framework.');
+        $this->console->info('✅ TempestPHP installed!');
+        $this->console->info('-----------------------------------------');
+        
         // Step 2: Create .gitignore file
-        $this->runCommand('touch .gitignore', 'Error creating .gitignore file.');
-
+        $this->console->info('➡️ Creating .gitignore file ...');
+        $this->runCommand('touch .gitignore', '❌ Error creating .gitignore file.');
+        $this->console->info('✅ .gitignore created!');
+        $this->console->info('-----------------------------------------');
+        
         // Step 3: Create package.json skeleton
-        $this->runCommand('npm init --yes', 'Error creating package.json.');
-
+        $this->console->info('➡️ Creating package.json...');
+        $this->runCommand('npm init --yes', '❌ Error creating package.json.');
+        $this->console->info('✅ package.json created!');
+        $this->console->info('-----------------------------------------');
+        
         // Step 4: Install Vite with Tailwind and npm
-        $this->runCommand('php tempest install vite --tailwind --no-interaction', 'Error installing Vite with Tailwind.');
-
+        $this->console->info('➡️ Starting installing vite & tailwind...');
+        $this->runCommand('php tempest install vite --tailwind --no-interaction', '❌ Error installing Vite with Tailwind.');
+        $this->console->info('✅ vite & tailwind installed!');
+        $this->console->info('-----------------------------------------');
+        
         // Step 5: Install authentication module
-        $this->runCommand('php tempest install auth --no-interaction', 'Error installing authentication module.');
-
+        $this->console->info('➡️ Starting installing Auth package...');
+        $this->runCommand('php tempest install auth --no-interaction', '❌ Error installing authentication module.');
+        $this->console->info('✅ Auth package installed!');
+        $this->console->info('-----------------------------------------');
+        
         // Step 6: Run migrations
-        $this->runCommand('php tempest migrate:up', 'Error running migrations.');
-
+        $this->console->info('➡️ Starting database migration...');
+        $this->runCommand('php tempest migrate:up', '❌ Error running migrations.');
+        $this->console->info('✅ Database migrated!');
+        $this->console->info('-----------------------------------------');
+        
         // Step 7: Add a default user
-        $this->runCommand('php tempest cyclone:add-default-user', 'Error adding default user.');
-
+        $this->console->info('➡️ Starting adding default user...');
+        $this->runCommand('php tempest cyclone:add-default-user', '❌ Error adding default user.');
+        $this->console->info('✅ Default user added!');
+        $this->console->info('-----------------------------------------');
+        
         // Step 8: Add a blog post
-        $this->runCommand('php tempest cyclone:add-blog-post', 'Error adding blog post.');
-
+        $this->console->info('➡️ Starting adding blog content...');
+        $this->runCommand('php tempest cyclone:add-blog-post', '❌ Error adding blog post.');
+        $this->console->info('✅ Blog content added!');
+        $this->console->info('-----------------------------------------');
+        
         // Step 9: Copy assets
-        $this->runCommand('php tempest cyclone:assets', 'Error copying assets.');
-
+        $this->console->info('➡️ Starting copying assets...');
+        $this->runCommand('php tempest cyclone:assets', '❌ Error copying assets.');
+        $this->console->info('✅ Assets copied!');
+        $this->console->info('-----------------------------------------');
+        
         // Step 10: Sync posts
-        $this->runCommand('php tempest cyclone:sync-posts', 'Error syncing posts.');
-
+        $this->console->info('➡️ Starting posts synchronisation...');
+        $this->runCommand('php tempest cyclone:sync-posts', '❌ Error syncing posts.');
+        $this->console->info('✅ Posts synchonized!');
+        $this->console->info('-----------------------------------------');
+        
         // Step 11: Install Tailwind Typography dependencies
-        $this->runCommand('npm install -D @tailwindcss/typography', 'Error installing @tailwindcss/typography.');
-
+        $this->console->info('➡️ Starting installing Tailwind Typography...');
+        $this->runCommand('npm install -D @tailwindcss/typography', '❌ Error installing @tailwindcss/typography.');
+        $this->console->info('✅ Tailwind Typography installed!');
+        $this->console->info('-----------------------------------------');
+        
+        // Step 11: Install Tailwind Typography dependencies
+        $this->console->info('➡️ Starting installing Milkdown...');
+        $this->runCommand('npm install @milkdown/crepe', '❌ Error installing @milkdown/crepe.');
+        $this->console->info('✅ Milkdown installed!');
+        $this->console->info('-----------------------------------------');
+        
         // Step 12: Install npm dependencies
-        $this->runCommand('npm install', 'Error installing npm dependencies.');
-
+        // $this->console->info('Starting TempestPHP installation...');
+        // $this->runCommand('npm install', '❌ Error installing npm dependencies.');
+        // $this->console->info('✅ Milkdown installed!');
+        // $this->console->info('-----------------------------------------');
+        
+        // Step 13: Install npm dependencies
+        $this->console->info('➡️ Starting npm update...');
+        $this->runCommand('npm update', '❌ Error installing npm dependencies.');
+        $this->console->info('✅ npm updated!');
+        $this->console->info('-----------------------------------------');
+        
         // Step 13: Run dev mode
-        $this->runCommand('npm run dev -- --no-open', 'Error running npm run dev.');
-
-        $this->success('Cyclone CMS installed successfully!');
+        // $this->runCommand('npm run dev -- --no-open', '❌ Error running npm run dev.');
+        
+        // todo cp .env.example to .env with correct url
+        // Step 14: Copy .env.example to .env
+        $this->console->info('➡️ Starting customizing .env...');
+        $envexamplePath = root_path() . '/.env.example';
+        $envPath = root_path() . '/.env';
+        if (file_exists($envexamplePath)) {
+            if (!copy($envexamplePath, $envPath)) {
+                $this->console->error("❌ Error copying .env.example to .env");
+                exit(1);
+            }
+            $this->console->info(".env.example copied to .env");
+        } else {
+            $this->console->error(".env.example file does not exist. Please create it manually.");
+            exit(1);
+        }  
+        
+        // Find BASE_URI=localhost and replace 'localhost' with the current URL
+        $currentUrl = $this->console->ask('What will be the current URL of your site? (e.g., https://cyclone.test)', default: 'https://cyclone.test');
+        $currentUrl = rtrim($currentUrl, '/'); // Remove trailing slash
+        $envContent = file_get_contents($envPath);
+        if ($envContent === false) {
+            $this->console->error("❌ Error reading .env file");
+            exit(1);
+        }   
+        $envContent = preg_replace('/^BASE_URI=.*$/m', 'BASE_URI=' . $currentUrl, $envContent);
+        if (file_put_contents($envPath, $envContent) === false) {
+            $this->console->error("❌ Error writing to .env file");
+            exit(1);
+        }
+        $this->console->info("BASE_URI set to $currentUrl in .env file");
+        $this->console->info('✅ .env updated!');
+        $this->console->info('-----------------------------------------');
+        
+        
+        $this->success('✅ Cyclone CMS installed successfully!');
 
         $this->info('Now you have to create the first user by launching the command: php tempest cyclone:add-user');
     }
