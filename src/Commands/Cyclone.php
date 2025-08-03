@@ -123,6 +123,10 @@ final readonly class Cyclone
                 'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/favicon',
                 'destination' => './public/favicon'
             ],
+            [
+                'source' => root_path() . DIRECTORY_SEPARATOR . 'vendor/happytodev/cyclone/src/Resources/ViewComponents/x-base.view.php.stub',
+                'destination' => './app/ViewComponents/x-base.view.php'
+            ],
         ];
 
         // Browse each item to be copied
