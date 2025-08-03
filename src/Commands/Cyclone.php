@@ -429,96 +429,83 @@ final readonly class Cyclone
     public function __invoke(): void
     {
         $this->console->info('Starting Cyclone CMS installation...');
-        
-        // Step 1: Install Tempest framework
+
+        // Step - Install Tempest framework
         $this->console->info('➡️ Starting TempestPHP installation...');
-        $this->runCommand('./vendor/bin/tempest install framework --no-interaction', '❌ Error installing Tempest framework.');
+        $this->runCommand('./vendor/bin/tempest install framework -f --no-interaction', '❌ Error installing Tempest framework.');
         $this->console->info('✅ TempestPHP installed!');
         $this->console->info('-----------------------------------------');
-        
-        // Step 2: Create .gitignore file
+
+        // Step - Create .gitignore file
         $this->console->info('➡️ Creating .gitignore file ...');
         $this->runCommand('touch .gitignore', '❌ Error creating .gitignore file.');
         $this->console->info('✅ .gitignore created!');
         $this->console->info('-----------------------------------------');
-        
-        // Step 3: Create package.json skeleton
+
+        // Step - Create package.json skeleton
         $this->console->info('➡️ Creating package.json...');
         $this->runCommand('npm init --yes', '❌ Error creating package.json.');
         $this->console->info('✅ package.json created!');
         $this->console->info('-----------------------------------------');
-        
-        // Step 4: Install Vite with Tailwind and npm
-        $this->console->info('➡️ Starting installing vite & tailwind...');
-        $this->runCommand('php tempest install vite --tailwind --no-interaction', '❌ Error installing Vite with Tailwind.');
-        $this->console->info('✅ vite & tailwind installed!');
-        $this->console->info('-----------------------------------------');
-        
-        // Step 5: Install authentication module
+
+        // Step - Install authentication module
         $this->console->info('➡️ Starting installing Auth package...');
         $this->runCommand('php tempest install auth --no-interaction', '❌ Error installing authentication module.');
         $this->console->info('✅ Auth package installed!');
         $this->console->info('-----------------------------------------');
-        
-        // Step 6: Run migrations
+
+        // Step - Run migrations
         $this->console->info('➡️ Starting database migration...');
         $this->runCommand('php tempest migrate:up', '❌ Error running migrations.');
         $this->console->info('✅ Database migrated!');
         $this->console->info('-----------------------------------------');
-        
-        // Step 7: Add a default user
+
+        // Step - Add a default user
         $this->console->info('➡️ Starting adding default user...');
         $this->runCommand('php tempest cyclone:add-default-user', '❌ Error adding default user.');
         $this->console->info('✅ Default user added!');
         $this->console->info('-----------------------------------------');
-        
-        // Step 8: Add a blog post
+
+        // Step - Add a blog post
         $this->console->info('➡️ Starting adding blog content...');
         $this->runCommand('php tempest cyclone:add-blog-post', '❌ Error adding blog post.');
         $this->console->info('✅ Blog content added!');
         $this->console->info('-----------------------------------------');
-        
-        // Step 9: Copy assets
+
+        // Step - Copy assets
         $this->console->info('➡️ Starting copying assets...');
         $this->runCommand('php tempest cyclone:assets', '❌ Error copying assets.');
         $this->console->info('✅ Assets copied!');
         $this->console->info('-----------------------------------------');
-        
-        // Step 10: Sync posts
+
+        // Step - Sync posts
         $this->console->info('➡️ Starting posts synchronisation...');
         $this->runCommand('php tempest cyclone:sync-posts', '❌ Error syncing posts.');
         $this->console->info('✅ Posts synchonized!');
         $this->console->info('-----------------------------------------');
-        
-        // Step 11: Install Tailwind Typography dependencies
+
+        // Step - Install Tailwind Typography dependencies
         $this->console->info('➡️ Starting installing Tailwind Typography...');
         $this->runCommand('npm install -D @tailwindcss/typography', '❌ Error installing @tailwindcss/typography.');
         $this->console->info('✅ Tailwind Typography installed!');
         $this->console->info('-----------------------------------------');
-        
-        // Step 11: Install Tailwind Typography dependencies
+
+        // Step - InstallMilkdown editor
         $this->console->info('➡️ Starting installing Milkdown...');
         $this->runCommand('npm install @milkdown/crepe', '❌ Error installing @milkdown/crepe.');
         $this->console->info('✅ Milkdown installed!');
         $this->console->info('-----------------------------------------');
-        
-        // Step 12: Install npm dependencies
-        // $this->console->info('Starting TempestPHP installation...');
-        // $this->runCommand('npm install', '❌ Error installing npm dependencies.');
-        // $this->console->info('✅ Milkdown installed!');
-        // $this->console->info('-----------------------------------------');
-        
-        // Step 13: Install npm dependencies
+
+        // Step - Install npm dependencies
         $this->console->info('➡️ Starting npm update...');
         $this->runCommand('npm update', '❌ Error installing npm dependencies.');
         $this->console->info('✅ npm updated!');
         $this->console->info('-----------------------------------------');
-        
-        // Step 13: Run dev mode
+
+        // Step - Run dev mode
         // $this->runCommand('npm run dev -- --no-open', '❌ Error running npm run dev.');
-        
-        // todo cp .env.example to .env with correct url
-        // Step 14: Copy .env.example to .env
+
+        // Step - Copy .env.example to .env & set BASE_URI
         $this->console->info('➡️ Starting customizing .env...');
         $envexamplePath = root_path() . '/.env.example';
         $envPath = root_path() . '/.env';
@@ -531,8 +518,8 @@ final readonly class Cyclone
         } else {
             $this->console->error(".env.example file does not exist. Please create it manually.");
             exit(1);
-        }  
-        
+        }
+
         // Find BASE_URI=localhost and replace 'localhost' with the current URL
         $currentUrl = $this->console->ask('What will be the current URL of your site? (e.g., https://cyclone.test)', default: 'https://cyclone.test');
         $currentUrl = rtrim($currentUrl, '/'); // Remove trailing slash
@@ -540,7 +527,7 @@ final readonly class Cyclone
         if ($envContent === false) {
             $this->console->error("❌ Error reading .env file");
             exit(1);
-        }   
+        }
         $envContent = preg_replace('/^BASE_URI=.*$/m', 'BASE_URI=' . $currentUrl, $envContent);
         if (file_put_contents($envPath, $envContent) === false) {
             $this->console->error("❌ Error writing to .env file");
@@ -549,8 +536,20 @@ final readonly class Cyclone
         $this->console->info("BASE_URI set to $currentUrl in .env file");
         $this->console->info('✅ .env updated!');
         $this->console->info('-----------------------------------------');
-        
-        
+
+
+        // Step - Launch discovery process
+        $this->console->info('➡️ Launch discovery process...');
+        $this->runCommand('php tempest discovery:generate', '❌ Error during discovery process.');
+        $this->console->info('✅ Discovery process finished!');
+        $this->console->info('-----------------------------------------');
+
+        // Step - Install Vite with Tailwind and npm
+        $this->console->info('➡️ Starting installing vite & tailwind...');
+        $this->runCommand('php tempest install vite --tailwind --no-interaction', '❌ Error installing Vite with Tailwind.');
+        $this->console->info('✅ vite & tailwind installed!');
+        $this->console->info('-----------------------------------------');
+
         $this->success('✅ Cyclone CMS installed successfully!');
 
         $this->info('Now you have to create the first user by launching the command: php tempest cyclone:add-user');
