@@ -137,7 +137,7 @@ final readonly class Cyclone
             if (is_dir($source)) {
                 // If it's a directory, copy recursively
                 $this->copyDirectory($source, $destination);
-                echo "The directory " . basename($source) . "has been copied to $destination.\n";
+                echo "The directory " . basename($source) . " has been copied to $destination.\n";
             } elseif (is_file($source)) {
                 // If it's a file, check and create the destination directory
                 $destinationDir = dirname($destination);
@@ -149,7 +149,7 @@ final readonly class Cyclone
                 }
                 // Copy the file
                 if (copy($source, $destination)) {
-                    echo "The file " . basename($source) . "has been successfully copied to $destination.\n";
+                    echo "The file " . basename($source) . " has been successfully copied to $destination.\n";
                 } else {
                     echo "Error: Unable to copy the file " . basename($source) . ".\n";
                 }
