@@ -511,8 +511,10 @@ final readonly class Cyclone
 
         // Step - Copy .env.example to .env & set BASE_URI
         $this->console->info('➡️ Starting customizing .env...');
-        $envexamplePath = root_path() . '/.env.example';
+        $envexamplePath = root_path() . '/vendor/happytodev/cyclone/.env.example';
+
         $envPath = root_path() . '/.env';
+
         if (file_exists($envexamplePath)) {
             if (!copy($envexamplePath, $envPath)) {
                 $this->console->error("❌ Error copying .env.example to .env");
@@ -527,7 +529,7 @@ final readonly class Cyclone
         // Find BASE_URI=localhost and replace 'localhost' with the current URL
         $currentUrl = $this->console->ask('What will be the current URL of your site? (e.g., https://cyclone.test)', default: 'https://cyclone.test');
         $currentUrl = rtrim($currentUrl, '/'); // Remove trailing slash
-        $envContent = file_get_contents($envPath);
+        $envContent = file_get_contents($envexamplePath);
         if ($envContent === false) {
             $this->console->error("❌ Error reading .env file");
             exit(1);
@@ -540,7 +542,6 @@ final readonly class Cyclone
         $this->console->info("BASE_URI set to $currentUrl in .env file");
         $this->console->info('✅ .env updated!');
         $this->console->info('-----------------------------------------');
-
 
         // Step - Launch discovery process
         $this->console->info('➡️ Launch discovery process...');
