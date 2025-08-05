@@ -22,7 +22,8 @@
         "league/commonmark": "^2.7",
         "tempest/highlight": "^2.11",
         "spatie/yaml-front-matter": "^2.1",
-        "tempest/core": "*"
+        "tempest/core": "*",
+        "happytodev/authentik": "^1.0"
     },
     "bin": [
         "bin/cyclone"
@@ -34,4 +35,3 @@
         ]
     }
 }
-
