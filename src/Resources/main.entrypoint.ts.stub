@@ -1,32 +1,220 @@
 console.log('🌊')
+
 import { Crepe } from "@milkdown/crepe";
 import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/frame.css";
+import { upload, uploadConfig } from "@milkdown/kit/plugin/upload";
+import type { Uploader } from "@milkdown/kit/plugin/upload";
+import type { Node } from "@milkdown/kit/prose/model";
+// Function to convert a blob URL to a file
+async function blobUrlToFile(blobUrl: string): Promise<File> {
+    try {
+        const response = await fetch(blobUrl);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch blob: ${response.status} ${response.statusText}`);
+        }
+        const blob = await response.blob();
+        const filename = `image-${Date.now()}`;
+        return new File([blob], filename, { type: blob.type });
+    } catch (error) {
+        console.error("Error converting blob URL to file:", error);
+        throw error;
+    }
+}
+// Function to convert a base64 image to a file
+async function base64ToFile(base64String: string): Promise<File> {
+    try {
+        // Extract MIME type and base64 data
+        const matches = base64String.match(/^data:(image\/\w+);base64,(.+)$/);
+        if (!matches || matches.length !== 3) {
+            throw new Error("Invalid base64 image format");
+        }
+        const mimeType = matches[1];
+        const base64Data = matches[2];
+        // Convert base64 to blob
+        const byteCharacters = atob(base64Data);
+        const byteArrays = [];
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteArrays.push(byteCharacters.charCodeAt(i));
+        }
+        const byteArray = new Uint8Array(byteArrays);
+        const blob = new Blob([byteArray], {type: mimeType});
+        // Create a file
+        const filename = `image-${Date.now()}`;
+        return new File([blob], filename, { type: mimeType });
+    } catch (error) {
+        console.error("Error converting base64 to file:", error);
+        throw error;
+    }
+}
+
+const uploadImageToServer = async (file: File): Promise<string> => {
+    console.log("Uploading image to server:", file.name);
+
+    // Retrieve the CSRF token from the hidden input
+    const csrfTokenElement = document.querySelector('input[name="#csrf_token"]') as HTMLInputElement;
+    if (!csrfTokenElement) {
+        throw new Error("CSRF token not found in the page");
+    }
+    const csrfToken = csrfTokenElement.value;
+
+    // Create the FormData and add the file and CSRF token
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("#csrf_token", csrfToken); // Key corresponding to Session::CSRF_TOKEN_KEY
+
+    try {
+        const response = await fetch("/admin/upload-image", {
+            method: "POST",
+            body: formData,
+            // credentials: 'include', // Include cookies for CSRF token
+        });
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(`Upload failed: ${response.status} - ${JSON.stringify(errorData)}`);
+        }
+        const result = await response.json();
+        if (!result.url) {
+            throw new Error("No URL returned by the server");
+        }
+        return result.url;
+    } catch (error) {
+        console.error("Error while uploading the image:", error);
+        throw error;
+    }
+};
+
+const customUploader: Uploader = async (files, schema) => {
+    console.log("Files received for upload:", files);
+    const images: File[] = [];
+    for (let i = 0; i < files.length; i++) {
+        const file = files.item(i);
+        if (file && file.type.includes("image")) {
+            images.push(file);
+        }
+    }
+    const nodes = await Promise.all(
+        images.map(async (image) => {
+            try {
+                const src = await uploadImageToServer(image);
+                const alt = image.name;
+                console.log("Image uploaded:", src);
+                return schema.nodes.image.createAndFill({ src, alt }) as Node;
+            } catch (error) {
+                console.error("Error uploading image:", error);
+                return schema.nodes.image.createAndFill({
+                    src: "",
+                    alt: "Upload failed"
+                }) as Node;
+            }
+        })
+    );
+    return nodes;
+};
 
 document.addEventListener("DOMContentLoaded", () => {
-  const editorElement = document.querySelector("#editor");
-  const markdownContent = editorElement.getAttribute("data-markdown") || "";
-
-  const crepe = new Crepe({
-    root: "#editor",
-    defaultValue: markdownContent,
-  });
-
-  crepe.create().then(() => {
-    console.log("Milkdown editor initialised with existing Markdown content");
-
-    // Update the textarea before submitting the form
-    const form = document.querySelector("#postForm");
-    form.addEventListener("submit", (event) => {
-      const markdownInput = document.querySelector("#markdownInput");
-      markdownInput.value = crepe.getMarkdown(); // Retrieve modified Markdown content
-      console.log(
-        "Markdown content updated in textarea before form submission"
-      );
-      // Optionally, you can prevent the form submission for debugging purposes
-      //   event.preventDefault();
-      //   console.log("Form submission prevented for debugging");
-      //   console.log("Markdown content:", crepe.getMarkdown());
+    const editorElement = document.querySelector("#editor");
+    if (!editorElement) {
+        console.error("The #editor element is not found");
+        return;
+    }
+    const markdownContent = editorElement.getAttribute("data-markdown") || "";
+    const crepe = new Crepe({
+        root: "#editor",
+        defaultValue: markdownContent,
     });
-  });
+    crepe.create()
+        .then(() => {
+            console.log("Editor instance created successfully");
+            // Configure upload plugin
+            crepe.editor.config((ctx) => {
+                ctx.update(uploadConfig.key, (prev) => ({
+                    ...prev,
+                    uploader: customUploader,
+                }));
+            });
+            crepe.editor.use(upload);
+            console.log("Milkdown editor initialized with upload plugin");
+            const form = document.querySelector("#postForm");
+            if (form) {
+                form.addEventListener("submit", async (event) => {
+                    event.preventDefault();
+                    console.log("Form submission intercepted");
+                    const markdownInput = document.querySelector("#markdownInput") as HTMLTextAreaElement;
+                    if (!markdownInput) {
+                        console.error("The #markdownInput element is not found");
+                        return;
+                    }
+                    let markdownContent = crepe.getMarkdown();
+                    console.log("Original markdown content:", markdownContent);
+                    // Regular expression to find markdown images with blob URLs or base64
+                    const imageUrlRegex = /!\[.*?\]\((blob:[^)]+|data:image\/\w+;base64,[^)]+)\)/g;
+                    const imageMatches = [...markdownContent.matchAll(imageUrlRegex)];
+                    if (imageMatches.length === 0) {
+                        console.log("No embedded images found, submitting form directly");
+                        markdownInput.value = markdownContent;
+                        form.submit();
+                        return;
+                    }
+                    console.log(`Found ${imageMatches.length} embedded images to process`);
+                    try {
+                        // Create a copy of the markdown content to modify
+                        let updatedMarkdown = markdownContent;
+                        // Map to store already processed URLs (to avoid duplicates)
+                        const processedUrls = new Map<string, string>();
+                        for (const match of imageMatches) {
+                            const fullMatch = match[0];
+                            const imageUrl = match[1];
+                            // If we've already processed this URL, replace directly
+                            if (processedUrls.has(imageUrl)) {
+                                const serverUrl = processedUrls.get(imageUrl);
+                                updatedMarkdown = updatedMarkdown.replace(fullMatch, `![](${serverUrl})`);
+                                continue;
+                            }
+                            try {
+                                let serverImageUrl;
+                                let file;
+                                if (imageUrl.startsWith('blob:')) {
+                                    console.log(`Processing blob URL: ${imageUrl}`);
+                                    file = await blobUrlToFile(imageUrl);
+                                } else if (imageUrl.startsWith('data:image/')) {
+                                    console.log(`Processing base64 image`);
+                                    file = await base64ToFile(imageUrl);
+                                } else {
+                                    // Not a blob or base64, skip
+                                    continue;
+                                }
+                                // Upload the file to the server
+                                serverImageUrl = await uploadImageToServer(file);
+                                // Store the processed URL for subsequent occurrences
+                                processedUrls.set(imageUrl, serverImageUrl);
+                                // Replace the URL in the markdown
+                                updatedMarkdown = updatedMarkdown.replace(fullMatch, `![](${serverImageUrl})`);
+                                console.log(`Replaced embedded image with server URL: ${serverImageUrl}`);
+                            } catch (error) {
+                                console.error(`Error processing image ${imageUrl}:`, error);
+                                // Continue with other images even if one fails
+                            }
+                        }
+                        // Update the markdown content in the hidden field
+                        markdownInput.value = updatedMarkdown;
+                        console.log("Updated markdown content with server image URLs:", updatedMarkdown);
+                        // Submit the form
+                        form.submit();
+                    } catch (error) {
+                        console.error("Error processing images before form submission:", error);
+                        alert("An error occurred while processing images. Please try again.");
+                    }
+                });
+            } else {
+                console.error("The #postForm is not found");
+            }
+        })
+        .catch((error) => {
+            console.error("Error initializing the editor:", error);
+            if (document.querySelector("#editor")) {
+                document.querySelector("#editor").innerHTML =
+                    `<div class="error">The editor could not be loaded. Error: ${error.message}</div>`;
+            }
+        });
 });
